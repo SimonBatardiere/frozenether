@@ -1,6 +1,9 @@
 /**
- * @brief Smart contract for the Frozen Ether service.
- * @license See LICENSE file.
+ * @title Smart contract for the Frozen Ether service.
+ * @author Simon Batardiere
+ *
+ * @notice
+ * For information about the license, see LICENSE file.
  *
  * The FrozenEther smart contract is a contract present in the Ethereum blockchain to implement the Frozen Ether
  * service. It permits to any user to store temporarily Ether in this contract, and give back it after a defined
@@ -36,31 +39,30 @@
  */
 contract FrozenEther {
 	/**
-	 * @brief Account object. FrozenEther contract will manipulate these objects to save the state for each
-	 *        accounts.
+	 * @dev Account object. FrozenEther contract will manipulate these objects to save the state for each accounts.
 	 */
 	struct Account {
 		/**
-		 * @brief Expiration date, to know if the account is in the frozen state (i.e. account.expire < now) or
-		 *        not. No withdraw is allowed during the frozen state. Moreover, if expire's value is 0, it
-		 *        means that the account doesn't exist.
+		 * @dev Expiration date, to know if the account is in the frozen state (i.e. account.expire < now) or
+		 *      not. No withdraw is allowed during the frozen state. Moreover, if expire's value is 0, it means
+		 *      that the account doesn't exist.
 		 */
 		uint expire;
 
 		/**
-		 * @brief Amount of Wei stored in this account.
+		 * @devAmount of Wei stored in this account.
 		 */
 		uint amount;
 	}
 
 	/**
-	 * @brief State variable which is a mapping of mapping of account. Each user (address) can owned a collection
-	 *        of accounts, identified thanks to an unique identifier choosen arbitrarily.
+	 * @dev State variable which is a mapping of mapping of account. Each user (address) can owned a collection of
+	 *      accounts, identified thanks to an unique identifier choosen arbitrarily.
 	 */
 	mapping (address => mapping (uint => Account)) private accounts;
 
 	/**
-	 * @brief Event generate when an account is created.
+	 * @notice Event generate when an account is created.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
 	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
@@ -69,7 +71,7 @@ contract FrozenEther {
 	event Create(address owner, uint id, uint remainingTime, uint amount);
 
 	/**
-	 * @brief Event generated when a deposit operation is performed on an account.
+	 * @notice Event generated when a deposit operation is performed on an account.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
 	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
@@ -78,7 +80,7 @@ contract FrozenEther {
 	event Deposit(address owner, uint id, uint remainingTime, uint amount);
 
 	/**
-	 * @brief Event generated when a whithdraw operation is performed on an account.
+	 * @notice Event generated when a whithdraw operation is performed on an account.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
 	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
@@ -87,7 +89,7 @@ contract FrozenEther {
 	event Withdraw(address owner, uint id, uint remainingTime, uint amount);
 
 	/**
-	 * @brief Event generated when the frozen state duration is extended on an account.
+	 * @notice Event generated when the frozen state duration is extended on an account.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
 	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
@@ -95,16 +97,16 @@ contract FrozenEther {
 	event Freeze(address owner, uint id, uint remainingTime);
 
 	/**
-	 * @brief Event generate when an account is destroyed.
+	 * @notice Event generate when an account is destroyed.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
 	 */
 	event Destroy(address owner, uint id);
 
 	/**
-	 * @brief Contract constructor. If the sender sent some ether during the contract creation, store it in its
-	 *        account (id = 0). This account expired now, the Ether can be retreive whenever. But you shouldn't send
-	 *        Ether at the contract creation...
+	 * @notice Contract constructor. If the sender sent some ether during the contract creation, store it in its
+	 *         account (id = 0). This account expired now, the Ether can be retreive whenever. But you shouldn't
+	 *         send Ether at the contract creation...
 	 */
 	function FrozenEter() {
 		if (msg.value != 0) {
@@ -115,16 +117,16 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Fallback function. Does nothing expect disallow Ether deposit.
+	 * @notice Fallback function. Does nothing expect disallow Ether deposit.
 	 */
 	function () {
 		throw;
 	}
 
 	/**
-	 * @brief Get the remaining time before withdraw is allowed on the account (frozen state) owned by the sender
-	 *        and identify by the identifier. Do not send Ether with this function, or the call will throw an
-	 *        execption.
+	 * @notice Get the remaining time before withdraw is allowed on the account (frozen state) owned by the sender
+	 *         and identify by the identifier. Do not send Ether with this function, or the call will throw an
+	 *         execption.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return Remaining time in second, or 0 if withdraw is allowed. Return also 0 if the account doesn't exist.
 	 */
@@ -136,8 +138,8 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Get the amount of Wei stored on the account owned by the sender and identify by the identifier. Do
-	 *        not send Ether with this function, or the call will throw an execption.
+	 * @notice Get the amount of Wei stored on the account owned by the sender and identify by the identifier. Do
+	 *         not send Ether with this function, or the call will throw an execption.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return Amount of Wei stored in the account, or 0 if the account doesn't exist.
 	 */
@@ -149,9 +151,9 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Create a new account to frozen some Ether during a laps of time. The new account is owned by the
-	 *        sender and identify by the identifier. This identifier must be unused for this specific sender (but
-	 *        two different users can use the same identifier).
+	 * @notice Create a new account to frozen some Ether during a laps of time. The new account is owned by the
+	 *         sender and identify by the identifier. This identifier must be unused for this specific sender (but
+	 *         two different users can use the same identifier).
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @param duration Duration is seconds during the account is frozen. No withdraw is allowed during the frozen
 	 *                 state.
@@ -171,8 +173,8 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Deposit some Ether on an existing account owned by the sender and identify by the idetnifier. The
-	 *        account must exist and must be still frozen.
+	 * @notice Deposit some Ether on an existing account owned by the sender and identify by the idetnifier. The
+	 *         account must exist and must be still frozen.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return True if success, else false.
 	 */
@@ -193,8 +195,8 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Withdraw some Ether from an existing account owned by the sender and identify by the identifier. Do
-	 *        not send Ether with this function, or the call will throw an execption.
+	 * @notice Withdraw some Ether from an existing account owned by the sender and identify by the identifier. Do
+	 *         not send Ether with this function, or the call will throw an execption.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @param amount Amount of Wei to withdraw from the account. If this amount is greater than the balance of the
 	 *               account, this function withdraw all available Wei, not more.
@@ -219,7 +221,7 @@ contract FrozenEther {
 
 		time = remainingAccountTime(account);
 		Withdraw(msg.sender, id, time, value);
-		if (account.value == 0) {
+		if (account.amount == 0) {
 			destroyAccount(account);
 			Destroy(msg.sender, id);
 		}
@@ -227,8 +229,8 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Extend the duration of the frozen state, means that no withdraw will be allowed for longer. Do not
-	 *        send Ether with this function, or the call will throw an execption.
+	 * @notice Extend the duration of the frozen state, means that no withdraw will be allowed for longer. Do not
+	 *         send Ether with this function, or the call will throw an execption.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @param duration Duration is seconds which will be added to the frozen state. No withdraw is allowed during
 	 *                 the frozen state. No negative value is allowed, you cannot reduce the frozen state duration!
@@ -253,7 +255,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Test if the account exists (i.e. is created) or not.
+	 * @notice Test if the account exists (i.e. is created) or not.
 	 * @param account Account object which is manipulated.
 	 * @return True if the account exists, else false.
 	 */
@@ -262,7 +264,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Test if the account is in frozen state (i.e. not expired) or not.
+	 * @notice Test if the account is in frozen state (i.e. not expired) or not.
 	 * @param account Account object which is manipulated.
 	 * @return True if the account expired, else false. And expired account means that wihdraw is allowed from it.
 	 */
@@ -271,7 +273,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Get the remaining time before withdraw is allowed on the account (frozen state).
+	 * @notice Get the remaining time before withdraw is allowed on the account (frozen state).
 	 * @param account Account object which is manipulated.
 	 * @return Remaining time in second, or 0 if withdraw is allowed. Return also 0 if the account doesn't exist.
 	 */
@@ -285,7 +287,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Create a new account, and initialize it.
+	 * @notice Create a new account, and initialize it.
 	 * @param account Account object which is manipulated.
 	 * @param duration Duration is seconds during the account is frozen. No withdraw is allowed during the frozen
 	 *                 state.
@@ -305,7 +307,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief If the account is empty, then this function will destroy it. A destroyed account is just an account
+	 * @notice If the account is empty, then this function will destroy it. A destroyed account is just an account
 	 *        with expire equal to 0.
 	 * @param account Account object which is manipulated.
 	 */
@@ -316,7 +318,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Deposit some Ether on an account. Deposit Ether is allowed only on an Account which is still frozen.
+	 * @notice Deposit some Ether on an account. Deposit Ether is allowed only on an Account which is still frozen.
 	 * @param account Account object which is manipulated.
 	 * @param amount Amount of Wei to deposit on the account.
 	 * @return True if success, else false.
@@ -333,7 +335,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Withdraw some Ether from an account. If the account is empty after the withdraw, the account is
+	 * @notice Withdraw some Ether from an account. If the account is empty after the withdraw, the account is
 	 *        destroyed.
 	 * @param account Account object which is manipulated.
 	 * @param amount Amount of Wei to withdraw from the account. If this amount is greater than the balance of the
@@ -356,7 +358,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @brief Extend the duration of the frozen state, means that no withdraw will be allowed for longer. Do not
+	 * @notice Extend the duration of the frozen state, means that no withdraw will be allowed for longer. Do not
 	 *        send Ether with this function, or the call will throw an execption.
 	 * @param account Account object which is manipulated.
 	 * @param duration Duration is seconds which will be added to the frozen state. No withdraw is allowed during
