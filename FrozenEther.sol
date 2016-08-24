@@ -112,7 +112,7 @@ contract FrozenEther {
 	 *         account (id = 0). This account expired now, the Ether can be retreive whenever. But you shouldn't
 	 *         send Ether at the contract creation...
 	 */
-	function FrozenEter() {
+	function FrozenEther() {
 		if (msg.value != 0) {
 			if (!create(0, 0)) {
 				throw;
