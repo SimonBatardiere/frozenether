@@ -33,6 +33,13 @@
  * Operations allowed only when an account is not in the frozen state:
  * - Withdraw some Ether from the account. Account is automatically destroyed if it become empty.
  *
+ * Events:
+ * - New account is created.
+ * - Existing account is destroyed.
+ * - Someone desposits some Ether on an account.
+ * - Someone withdraws some Ether from an account.
+ * - Someone lengthen the frozen state duration of an account.
+ *
  * API of this smart contract only allow account's owner to get information about this account. A user cannot retreive
  * informations about accounts owned by other users. But remember that limitation is only implemented in the API of the
  * smart contract: everyone can read datas stored in the Ethereum blockchain and analyse the transactions.
@@ -65,36 +72,9 @@ contract FrozenEther {
 	 * @notice Event generate when an account is created.
 	 * @param owner Address of the account's owner.
 	 * @param id Identifier of the account, which is unique for one owner.
-	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
-	 * @param amount Amount of Wei which are deposit on the account.
+	 * @param amount Amount of Wei which are deposited on the account.
 	 */
-	event Create(address owner, uint id, uint remainingTime, uint amount);
-
-	/**
-	 * @notice Event generated when a deposit operation is performed on an account.
-	 * @param owner Address of the account's owner.
-	 * @param id Identifier of the account, which is unique for one owner.
-	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
-	 * @param amount Amount of Wei which are deposit on the account.
-	 */
-	event Deposit(address owner, uint id, uint remainingTime, uint amount);
-
-	/**
-	 * @notice Event generated when a whithdraw operation is performed on an account.
-	 * @param owner Address of the account's owner.
-	 * @param id Identifier of the account, which is unique for one owner.
-	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
-	 * @param amount Amount of Wei which are withdrawed from the account.
-	 */
-	event Withdraw(address owner, uint id, uint remainingTime, uint amount);
-
-	/**
-	 * @notice Event generated when the frozen state duration is extended on an account.
-	 * @param owner Address of the account's owner.
-	 * @param id Identifier of the account, which is unique for one owner.
-	 * @param remainingTime Remaining time in the frozen state, means that no withdraw is allowed during this state.
-	 */
-	event Freeze(address owner, uint id, uint remainingTime);
+	event Create(address owner, uint id, uint amount);
 
 	/**
 	 * @notice Event generate when an account is destroyed.
@@ -102,6 +82,30 @@ contract FrozenEther {
 	 * @param id Identifier of the account, which is unique for one owner.
 	 */
 	event Destroy(address owner, uint id);
+
+	/**
+	 * @notice Event generated when a deposit operation is performed on an account.
+	 * @param owner Address of the account's owner.
+	 * @param id Identifier of the account, which is unique for one owner.
+	 * @param amount Amount of Wei which are deposited on the account.
+	 */
+	event Deposit(address owner, uint id, uint amount);
+
+	/**
+	 * @notice Event generated when a whithdraw operation is performed on an account.
+	 * @param owner Address of the account's owner.
+	 * @param id Identifier of the account, which is unique for one owner.
+	 * @param amount Amount of Wei which are withdrawed from the account.
+	 */
+	event Withdraw(address owner, uint id, uint amount);
+
+	/**
+	 * @notice Event generated when the frozen state duration is extended on an account.
+	 * @param owner Address of the account's owner.
+	 * @param id Identifier of the account, which is unique for one owner.
+	 * @param duration Duration in seconds added to the frozen state.
+	 */
+	event Freeze(address owner, uint id, uint duration);
 
 	/**
 	 * @notice Contract constructor. If the sender sent some ether during the contract creation, store it in its
@@ -161,14 +165,11 @@ contract FrozenEther {
 	 */
 	function create(uint id, uint duration) public returns(bool) {
 		Account account = accounts[msg.sender][id];
-		uint time = 0;
 
 		if (!createAccount(account, duration, msg.value)) {
 			throw;
 		}
-
-		time = remainingAccountTime(account);
-		Create(msg.sender, id, time, account.amount);
+		Create(msg.sender, id, account.amount);
 		return true;
 	}
 
@@ -180,7 +181,6 @@ contract FrozenEther {
 	 */
 	function deposit(uint id) public returns(bool) {
 		Account account = accounts[msg.sender][id];
-		uint time = 0;
 
 		if (msg.value == 0) {
 			return false;
@@ -189,8 +189,7 @@ contract FrozenEther {
 			throw;
 		}
 
-		time = remainingAccountTime(account);
-		Deposit(msg.sender, id, time, msg.value);
+		Deposit(msg.sender, id, msg.value);
 		return true;
 	}
 
@@ -205,7 +204,6 @@ contract FrozenEther {
 	function withdraw(uint id, uint amount) public returns(bool) {
 		Account account = accounts[msg.sender][id];
 		uint value = 0;
-		uint time = 0;
 
 		if (msg.value != 0) {
 			throw;
@@ -219,8 +217,7 @@ contract FrozenEther {
 			throw;
 		}
 
-		time = remainingAccountTime(account);
-		Withdraw(msg.sender, id, time, value);
+		Withdraw(msg.sender, id, value);
 		if (account.amount == 0) {
 			destroyAccount(account);
 			Destroy(msg.sender, id);
@@ -240,7 +237,6 @@ contract FrozenEther {
 	 */
 	function lenghtenFrozenState(uint id, uint duration) public returns(bool) {
 		Account account = accounts[msg.sender][id];
-		uint time = 0;
 
 		if (msg.value != 0) {
 			throw;
@@ -249,8 +245,7 @@ contract FrozenEther {
 			return false;
 		}
 
-		time = remainingAccountTime(account);
-		Freeze(msg.sender, id, time);
+		Freeze(msg.sender, id, duration);
 		return true;
 	}
 
