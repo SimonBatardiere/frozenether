@@ -5,7 +5,19 @@
 		<title>Frozen Ether</title>
 	</head>
 	<body>
-		<p>Frozen Ether website is not available yet.</p>
+		<h1>Frozen Ether</h1>
+		<h2>Create</h2>
+		<form>
+			<p>
+				<label for="account">Account</label>: <input type="text" id="create_account"/></br>
+				<label for="amount">Amount</label>: <input type="text" id="create_amount"/> wei</br>
+				<label for="duration">Duration</label>: <input type="number" min="0" id="create_duration"/> seconds</br>
+				<input type="button" value="Create" id="create_button"/>
+			</p>
+		</form>
+		<h2>Accounts</h2>
+		<div id="accounts"></div>
+		<script src="script.js"></script>
 	</body>
 </html>
 
