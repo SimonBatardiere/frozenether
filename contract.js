@@ -1,11 +1,12 @@
 const FROZEN_ETHER_ADDRESS = '0x0000000000000000000000000000000000000000';
-const FROZEN_ETHER_ADDRESS_TESTNET = '0xb466C54ac0edD7B84F2D186a64dE1090afbbC4dE';
+const FROZEN_ETHER_ADDRESS_TESTNET = '0xb466c54ac0edd7b84f2d186a64de1090afbbc4de';
 const FROZEN_ETHER_STARTING_BLOCK = 0;
 const FROZEN_ETHER_STARTING_BLOCK_TESTNET = 1536935;
 const FROZEN_ETHER_ABI = [{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"remainingTime","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"lenghtenFrozenState","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"amount","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"create","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"}],"name":"deposit","outputs":[{"name":"","type":"bool"}],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Create","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"}],"name":"Destroy","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"duration","type":"uint256"}],"name":"Freeze","type":"event"}];
 
 var contract;
 var startingBlock;
+var events;
 
 function init() {
 	console.log('Initialize');
@@ -13,7 +14,6 @@ function init() {
 		return false;
 	}
 	initContract();
-	initEvents();
 	initAccounts();
 	return true;
 }
@@ -23,7 +23,7 @@ function initWeb3() {
 		web3 = new Web3(web3.currentProvider);
 	} else if (typeof Web3 !== 'undefined') {
 		web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-	} else {
+	} else if (typeof web3 == 'undefined' && typeof Web3 == 'undefined') {
 		console.log('Web3 is not supported');
 		return false;
 	}
@@ -46,6 +46,8 @@ function initContract() {
 			startingBlock = FROZEN_ETHER_STARTING_BLOCK_TESTNET;
 		}
 		contract = web3.eth.contract(FROZEN_ETHER_ABI).at(contractAddress);
+		events = new Events();
+		events.start();
 	})
 }
 
@@ -210,39 +212,47 @@ function lenghtenFrozenState(account, id, duration) {
 	return true;
 }
 
-function onCreate(account, id, amount) {
-	if (!checkAccount(account)) {
-		console.error('Account ' + account + ' is invalid');
+function onCreate(owner, id, amount) {
+	if (!checkAccount(owner)) {
+		console.error('Account ' + owner + ' is invalid');
 		return false;
 	}
+	frozenether.accounts.push(new Account(owner, id, amount));
 }
 
-function onDestroy(account, id) {
-	if (!checkAccount(account)) {
-		console.error('Account ' + account + ' is invalid');
+function onDestroy(owner, id) {
+	if (!checkAccount(owner)) {
+		console.error('Account ' + owner + ' is invalid');
 		return false;
 	}
+	var account = getAccount(owner, id);
 }
 
-function onDeposit(account, id, amount) {
-	if (!checkAccount(account)) {
-		console.error('Account ' + account + ' is invalid');
+function onDeposit(owner, id, amount) {
+	if (!checkAccount(owner)) {
+		console.error('Account ' + owner + ' is invalid');
 		return false;
 	}
+	var account = getAccount(owner, id);
+	account.deposit(amount);
 }
 
-function onWithdraw(account, id, amount) {
-	if (!checkAccount(account)) {
-		console.error('Account ' + account + ' is invalid');
+function onWithdraw(owner, id, amount) {
+	if (!checkAccount(owner)) {
+		console.error('Account ' + owner + ' is invalid');
 		return false;
 	}
+	var account = getAccount(owner, id);
+	account.withdraw(amount);
 }
 
-function onFreeze(account, id, duration) {
-	if (!checkAccount(account)) {
-		console.error('Account ' + account + ' is invalid');
+function onFreeze(owner, id, duration) {
+	if (!checkAccount(owner)) {
+		console.error('Account ' + owner + ' is invalid');
 		return false;
 	}
+	var account = getAccount(owner, id);
+	account.freeze(duration);
 }
 
 function Events() {
@@ -263,11 +273,12 @@ function Events() {
 				onCreate(data.args.owner, data.args.id, data.args.amount);
 			});
 		}
+		return;
 
 		if (typeof this.destroy === 'undefined') {
 			this.destroy = contract.Destroy({owner: web3.eth.accounts}, {fromBlock: startingBlock});
 			this.destroy.watch(function(error, data) {
-				if (!error) {
+				if (error) {
 					console.error('Error with destroy event');
 					return;
 				}
@@ -279,7 +290,7 @@ function Events() {
 		if (typeof this.deposit === 'undefined') {
 			this.deposit = contract.Deposit({owner: web3.eth.accounts}, {fromBlock: startingBlock});
 				this.deposit.watch(function(error, data) {
-				if (!error) {
+				if (error) {
 					console.error('Error with deposit event');
 					return;
 				}
@@ -291,7 +302,7 @@ function Events() {
 		if (typeof this.withdraw === 'undefined') {
 			this.withdraw = contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: startingBlock});
 			this.withdraw.watch(function(error, data) {
-				if (!error) {
+				if (error) {
 					console.error('Error with withdraw event');
 					return;
 				}
@@ -303,7 +314,7 @@ function Events() {
 		if (typeof this.freeze === 'undefined') {
 			this.freeze = contract.Freeze({owner: web3.eth.accounts}, {fromBlock: startingBlock});
 			this.freeze.watch(function(error, data) {
-				if (!error) {
+				if (error) {
 					console.error('Error with freeze event');
 					return;
 				}
@@ -357,7 +368,7 @@ function initAccounts() {
 	len = web3.eth.accounts.length;
 	for (i = 0; i < len; i++) {
 		html = '<option value="' + web3.eth.accounts[i] + '">' + web3.eth.accounts[i] + '</option>'
-		$('#create_account').after(html);
+		$('#create_account').append(html);
 	}
 }
 

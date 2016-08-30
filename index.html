@@ -12,7 +12,9 @@
 		<h2>Create</h2>
 		<form>
 			<p>
-				<label for="create_account">Account</label>: <select id="create_account"/></select></br>
+				<label for="create_account">Account</label>: <select id="create_account"/>
+					<option value="" disabled selected>Select your account</option>
+				</select></br>
 				<label for="create_amount">Amount</label>: <input type="text" id="create_amount"/> wei</br>
 				<label for="create_duration">Duration</label>: <input type="number" min="0" id="create_duration"/> seconds</br>
 				<input type="button" value="Create" id="create_button"/>
@@ -22,8 +24,8 @@
 		<div id="accounts"></div>
 		<footer></footer>
 		<script src="http://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
-		<script src="../js/script.js"></script>
-		<script src="../js/contract.js"></script>
+		<script src="js/script.js"></script>
+		<script src="js/contract.js"></script>
 	</body>
 </html>
 
