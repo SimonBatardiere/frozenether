@@ -2,22 +2,28 @@
 <html>
 	<head>
 		<meta charset="utf-8"/>
+		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
 		<title>Frozen Ether</title>
 	</head>
 	<body>
-		<h1>Frozen Ether</h1>
+		<header>
+			<h1>Frozen Ether</h1>
+		</header>
 		<h2>Create</h2>
 		<form>
 			<p>
-				<label for="account">Account</label>: <input type="text" id="create_account"/></br>
-				<label for="amount">Amount</label>: <input type="text" id="create_amount"/> wei</br>
-				<label for="duration">Duration</label>: <input type="number" min="0" id="create_duration"/> seconds</br>
+				<label for="create_account">Account</label>: <select id="create_account"/></select></br>
+				<label for="create_amount">Amount</label>: <input type="text" id="create_amount"/> wei</br>
+				<label for="create_duration">Duration</label>: <input type="number" min="0" id="create_duration"/> seconds</br>
 				<input type="button" value="Create" id="create_button"/>
 			</p>
 		</form>
 		<h2>Accounts</h2>
 		<div id="accounts"></div>
-		<script src="script.js"></script>
+		<footer></footer>
+		<script src="http://code.jquery.com/jquery-3.1.0.min.js" integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s=" crossorigin="anonymous"></script>
+		<script src="../js/script.js"></script>
+		<script src="../js/contract.js"></script>
 	</body>
 </html>
 

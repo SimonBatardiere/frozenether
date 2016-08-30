@@ -1,250 +1,119 @@
-var web3 = {};
-web3.toWei = function(amount, unit) {
-	return amount;
-};
-
-var button;
 var frozenether = {
 	accounts: [],
 };
 
-button = document.querySelector("#create_button");
-button.addEventListener("click", function(event) {
-	var accountDom;
-	var account;
-	var amountDom;
-	var amount;
-	var durationDom;
-	var duration;
+function getAccount(owner, id) {
+	var i, len;
 
-	accountDom = document.querySelector("#create_account");
-	account = accountDom.value;
-	amountDom = document.querySelector("#create_amount");
-	amount = web3.toWei(parseFloat(amountDom.value), "ether");
-	if (isNaN(amount)) {
-		displayError("Invalid amount");
-		return;
+	len = frozenether.accounts.lenght;
+	for (i = 0; i < len; i++) {
+		if ((frozenether.accounts[i].owner == owner) &&
+				(frozenether.accounts[i].id == id)) {
+			return frozenether.accounts[i];
+		}
 	}
-	durationDom = document.querySelector("#create_duration");
-	duration = parseInt(durationDom.value);
-	if (isNaN(duration)) {
-		displayError("Invalid duration");
-		return;
-	}
-	create(account, amount, duration);
-});
-
-function displayError(message) {
-	alert("Error: " + message);
-}
-
-function create(account, amount, duration) {
-	var id;
-
-	id = Math.floor(Math.random() * 65536);
-	frozenether.accounts.push(new Account(account, id, amount));
+	return undefined;
 }
 
 function Account(owner, id, amount) {
 	this.owner = owner;
 	this.id = id;
 	this.amount = amount;
+	this.duration = 0;
 	this.createHtml();
-	this.addEventListener();
+	this.events();
 }
 
 Account.prototype.createHtml = function() {
-	var div;
-	var h3;
-	var p;
-	var form;
-	var label;
-	var input;
-	var span;
-	var br;
-
-	div = document.createElement("div");
-	div.id = this.owner + "_" + this.id + "_account";
-
-	h3 = document.createElement("h3");
-	h3.appendChild(document.createTextNode("Configuration"));
-	div.appendChild(h3);
-
-	p = document.createElement("p");
-	p.appendChild(document.createTextNode("Owner: " + this.owner));
-	p.appendChild(document.createElement("br"));
-	p.appendChild(document.createTextNode("ID: " + this.id));
-	p.appendChild(document.createElement("br"));
-	p.appendChild(document.createTextNode("Amount: "));
-	span = document.createElement("span");
-	span.id = this.owner + "_" + this.id + "_amount";
-	span.appendChild(document.createTextNode(this.amount));
-	p.appendChild(span);
-	p.appendChild(document.createElement("br"));
-	p.appendChild(document.createTextNode("Duration: "));
-	span = document.createElement("span");
-	span.id = this.owner + "_" + this.id + "_duration";
-	span.appendChild(document.createTextNode("0"));
-	p.appendChild(span);
-	div.appendChild(p);
-
-	h3 = document.createElement("h3");
-	h3.appendChild(document.createTextNode("Deposit"));
-	div.appendChild(h3);
-
-	form = document.createElement("form");
-	p = document.createElement("p");
-	label = document.createElement("label");
-	label.htmlFor = this.owner + "_" + this.id + "_deposit_amount";
-	label.appendChild(document.createTextNode("Amount"));
-	p.appendChild(label);
-	p.appendChild(document.createTextNode(": "));
-	input = document.createElement("input");
-	input.type = "text";
-	input.id = this.owner + "_" + this.id + "_deposit_amount";
-	p.appendChild(input);
-	p.appendChild(document.createTextNode(" wei"));
-	p.appendChild(document.createElement("br"));
-	input = document.createElement("input");
-	input.type = "button";
-	input.value = "Deposit";
-	input.id = this.owner + "_" + this.id + "_deposit_button";
-	p.appendChild(input);
-	form.appendChild(p);
-	div.appendChild(form);
-
-	h3 = document.createElement("h3");
-	h3.appendChild(document.createTextNode("Withdraw"));
-	div.appendChild(h3);
-
-	form = document.createElement("form");
-	p = document.createElement("p");
-	label = document.createElement("label");
-	label.htmlFor = this.owner + "_" + this.id + "_withdraw_amount";
-	label.appendChild(document.createTextNode("Amount"));
-	p.appendChild(label);
-	p.appendChild(document.createTextNode(": "));
-	input = document.createElement("input");
-	input.type = "text";
-	input.id = this.owner + "_" + this.id + "_withdraw_amount";
-	p.appendChild(input);
-	p.appendChild(document.createTextNode(" wei"));
-	p.appendChild(document.createElement("br"));
-	input = document.createElement("input");
-	input.type = "button";
-	input.value = "Withdraw";
-	input.id = this.owner + "_" + this.id + "_withdraw_button";
-	p.appendChild(input);
-	form.appendChild(p);
-	div.appendChild(form);
-
-	h3 = document.createElement("h3");
-	h3.appendChild(document.createTextNode("Freeze"));
-	div.appendChild(h3);
-
-	form = document.createElement("form");
-	p = document.createElement("p");
-	label = document.createElement("label");
-	label.htmlFor = this.owner + "_" + this.id + "_freeze_duration";
-	label.appendChild(document.createTextNode("Duration"));
-	p.appendChild(label);
-	p.appendChild(document.createTextNode(": "));
-	input = document.createElement("input");
-	input.type = "number";
-	input.min = "0";
-	input.id = this.owner + "_" + this.id + "_freeze_duration";
-	p.appendChild(input);
-	p.appendChild(document.createTextNode(" seconds"));
-	p.appendChild(document.createElement("br"));
-	input = document.createElement("input");
-	input.type = "button";
-	input.value = "Freeze";
-	input.id = this.owner + "_" + this.id + "_freeze_button";
-	p.appendChild(input);
-	form.appendChild(p);
-	div.appendChild(form);
-
-	accounts = document.querySelector("#accounts");
-	accounts.appendChild(div);
+	var html = '<div id="' + this.selector('account') + '">'
+	html += '<h3>Configuration</h3>'
+	html += '<p>'
+	html += 'Owner: ' + this.owner + '</br>'
+	html += 'Identifier: ' + this.id + '</br>'
+	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount + '</span> wei</br>'
+	html += 'Duration:<span id="' + this.selector('data_duration') + '">' + this.duration + '</span> seconds</br>'
+	html += '</p>'
+	html += '<h3>Actions</h3>'
+	html += '<form>'
+	html += '<p>'
+	html += '<label id="' + this.selector('action_amount') + '">Amount</label>: '
+	html += '<input type="text" id="' + this.selector('action_amount') + '"></input></br>'
+	html += '<label id="' + this.selector('action_duration') + '">Duration</label>: '
+	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '"></input></br>'
+	html += '<input type="button" id="' + this.selector('deposit') + '" value="Deposit"></input>'
+	html += '<input type="button" id="' + this.selector('withdraw') + '" value="Withdraw"></input>'
+	html += '<input type="button" id="' + this.selector('freeze') + '" value="Freeze"></input>'
+	html += '</br>'
+	html += '</p>'
+	html += '</form>'
+	html += '</div>'
+	$('#accounts').after(html);
 }
 
-Account.prototype.addEventListener = function() {
-	var button;
+Account.prototype.events = function() {
 	var account = this;
 
-	button = document.querySelector("#" + this.owner + "_" + this.id + "_deposit_button");
-	button.addEventListener("click", function(event) {
-		var node;
-		var amount;
-
-		node = document.querySelector("#" + account.owner + "_" + account.id + "_deposit_amount");
-		amount = web3.toWei(parseFloat(node.value), "ether");
-		if (isNaN(amount)) {
-			displayError("Invalid amount");
-			return;
+	$(this.selector('deposit')).on('click', function() {
+		var amount = parseFloat($(this.selector('action_amount')).val());
+		var errcode = deposit(account.account, account.id, amount, 'finney');
+		if (!errcode) {
+			console.err('Deposit on account failed');
 		}
-		account.deposit(amount);
 	});
 
-	button = document.querySelector("#" + this.owner + "_" + this.id + "_withdraw_button");
-	button.addEventListener("click", function(event) {
-		var node;
-		var amount;
-
-		node = document.querySelector("#" + account.owner + "_" + account.id + "_withdraw_amount");
-		amount = web3.toWei(parseFloat(node.value), "ether");
-		if (isNaN(amount)) {
-			displayError("Invalid amount");
-			return;
+	$(this.selector('withdraw')).on('click', function() {
+		var amount = parseFloat($(this.selector('action_amount')).val());
+		var errcode = withdraw(this.account, account.id, amount, 'finney');
+		if (!errcode) {
+			console.err('Withdraw from account failed');
 		}
-		account.withdraw(amount);
 	});
 
-	button = document.querySelector("#" + this.owner + "_" + this.id + "_freeze_button");
-	button.addEventListener("click", function(event) {
-		var node;
-		var duration;
-
-		node = document.querySelector("#" + account.owner + "_" + account.id + "_freeze_duration");
-		duration = parseInt(node.value);
-		if (isNaN(duration)) {
-			displayError("Invalid duration");
-			return;
+	$(this.selector('freeze')).on('click', function() {
+		var duration = parseInt($(this.selector('action_duration')).val());
+		var errcode = freeze(account.account, account.id, duration);
+		if (!errcode) {
+			console.err('Freeze  account failed');
 		}
-		account.freeze(duration);
 	});
-}
-
-Account.prototype.updateHtml = function() {
-	var node;
-
-	node = document.querySelector("#" + this.owner + "_" + this.id + "_amount");
-	while (node.firstChild) {
-		node.removeChild(node.firstChild);
-	}
-	node.appendChild(document.createTextNode(this.amount));
 }
 
 Account.prototype.deposit = function(amount) {
 	this.amount += amount;
-	this.updateHtml();
+	$(this.selector('data_amount')).text(this.amount);
 }
 
 Account.prototype.withdraw = function(amount) {
 	this.amount -= amount;
-	this.updateHtml();
+	$(this.selector('data_amount')).text(this.amount);
 	if (this.amount <= 0) {
 		this.destroy();
 	}
 }
 
-Account.prototype.freeze = function(duration) {
-}
-
 Account.prototype.destroy = function() {
-	var node;
-
-	node = document.querySelector("#" + this.owner + "_" + this.id + "_account");
-	node.parentNode.removeChild(node);
+	$(this.selector('account')).remove();
 }
+
+Account.prototype.selector = function(suffix) {
+	var selector = '#' + this.owner + '_' + this.id;
+	if (typeof suffix === 'string') {
+		selector = selector + '_' + suffix;
+	}
+	return selector;
+}
+
+$(function() {
+	$('#create_button').on('click', function() {
+		var account = $('#create_account').val();
+		var amount = parseFloat($('#create_amount').val());
+		var duration = parseInt($('#create_duration').val());
+		var errcode = create(account, duration, amount, 'finney');
+		if (!errcode) {
+			console.err('Create account failed');
+		}
+		frozenether.accounts.push(new Account(account, id, amount, duration));
+	});
+});
+
 
