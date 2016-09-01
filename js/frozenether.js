@@ -1,2 +1,4 @@
-var frozenether = {};
+var frozenether = {
+	accounts: []
+};
 

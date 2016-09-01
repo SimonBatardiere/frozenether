@@ -91,7 +91,7 @@ function amount(account, id) {
 }
 
 function create(account, duration, amount, unit) {
-	var id = 0;
+	var id = 0
 	var wei = 0;
 
 	if (!checkAccount(account)) {
@@ -214,7 +214,7 @@ function lenghtenFrozenState(account, id, duration) {
 
 function onEvent(owner, id, account) {
 	if (typeof account === 'undefined') {
-		account = getAccount(owner, id);
+		account = frozenether.getAccount(owner, id);
 	}
 	if (typeof account === 'undefined') {
 		console.error('Cannot get account(' + owner + '|' + id + ')');
@@ -224,7 +224,7 @@ function onEvent(owner, id, account) {
 }
 
 function onCreate(owner, id, amount) {
-	var account = getAccount(owner, id);
+	var account = frozenether.getAccount(owner, id);
 	if (typeof account === 'undefined') {
 		account = new frozenether.Account(owner, id);
 		frozenether.accounts.push(account);
@@ -269,7 +269,6 @@ function Events() {
 				onCreate(msg.args.owner, msg.args.id, msg.args.amount);
 			});
 		}
-		return;
 
 		if (typeof this.destroy === 'undefined') {
 			this.destroy = contract.Destroy({owner: web3.eth.accounts}, {fromBlock: startingBlock});
