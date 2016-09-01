@@ -1,8 +1,6 @@
-var frozenether = {
-	accounts: [],
-};
+frozenether.accounts = [];
 
-function getAccount(owner, id) {
+frozenether.getAccount = function(owner, id) {
 	var i, len;
 
 	len = frozenether.accounts.lenght;
@@ -15,16 +13,23 @@ function getAccount(owner, id) {
 	return undefined;
 }
 
-function Account(owner, id, amount) {
+frozenether.Account = function(owner, id) {
 	this.owner = owner;
 	this.id = id;
-	this.amount = amount;
-	this.duration = 0;
+	this.history = new History();
 	this.createHtml();
 	this.events();
 }
 
-Account.prototype.createHtml = function() {
+frozenether.Account.prototype.selector = function(suffix) {
+	var selector = '#' + this.owner + '_' + this.id;
+	if (typeof suffix === 'string') {
+		selector = selector + '_' + suffix;
+	}
+	return selector;
+}
+
+frozenether.Account.prototype.createHtml = function() {
 	var html = '<div id="' + this.selector('account') + '">'
 	html += '<h3>Configuration</h3>'
 	html += '<p>'
@@ -37,9 +42,9 @@ Account.prototype.createHtml = function() {
 	html += '<form>'
 	html += '<p>'
 	html += '<label id="' + this.selector('action_amount') + '">Amount</label>: '
-	html += '<input type="text" id="' + this.selector('action_amount') + '"></input></br>'
+	html += '<input type="text" id="' + this.selector('action_amount') + '" placeholder="0"></input></br>'
 	html += '<label id="' + this.selector('action_duration') + '">Duration</label>: '
-	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '"></input></br>'
+	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '" placeholder="0"></input></br>'
 	html += '<input type="button" id="' + this.selector('deposit') + '" value="Deposit"></input>'
 	html += '<input type="button" id="' + this.selector('withdraw') + '" value="Withdraw"></input>'
 	html += '<input type="button" id="' + this.selector('freeze') + '" value="Freeze"></input>'
@@ -50,7 +55,20 @@ Account.prototype.createHtml = function() {
 	$('#accounts').after(html);
 }
 
-Account.prototype.events = function() {
+frozenether.Account.prototype.destroy = function() {
+	var i, len;
+
+	len = frozenether.accounts.lenght;
+	for (i = 0; i < len; i++) {
+		if ((frozenether.accounts[i].owner == this.owner) &&
+				(frozenether.accounts[i].id == this.id)) {
+			frozenether.accounts.slice(i, i);
+		}
+	}
+	$(this.selector('account')).remove();
+}
+
+frozenether.Account.prototype.events = function() {
 	var account = this;
 
 	$(this.selector('deposit')).on('click', function() {
@@ -78,41 +96,46 @@ Account.prototype.events = function() {
 	});
 }
 
-Account.prototype.deposit = function(amount) {
-	this.amount += amount;
-	$(this.selector('data_amount')).text(this.amount);
+frozenether.Account.prototype.getAmount = function() {
+	return amount(this.owner, this.id);
 }
 
-Account.prototype.withdraw = function(amount) {
-	this.amount -= amount;
-	$(this.selector('data_amount')).text(this.amount);
-	if (this.amount <= 0) {
+frozenether.Account.prototype.getDuration = function() {
+	return remainingTime(this.owner, this.id);
+}
+
+frozenether.Account.prototype.update = function(msg) {
+	var amount = this.getAmount();
+	var duration = this.getDuration();
+
+	$(this.selector('data_amount')).text(amount);
+	$(this.selector('data_duration')).text(duration);
+	if (typeof msg !== 'undefined') {
+		this.history.push(msg);
+	}
+	if (amount <= 0) {
 		this.destroy();
 	}
 }
 
-Account.prototype.destroy = function() {
-	$(this.selector('account')).remove();
-}
-
-Account.prototype.selector = function(suffix) {
-	var selector = '#' + this.owner + '_' + this.id;
-	if (typeof suffix === 'string') {
-		selector = selector + '_' + suffix;
-	}
-	return selector;
-}
-
 $(function() {
 	$('#create_button').on('click', function() {
-		var account = $('#create_account').val();
+		var owner = $('#create_owner').val();
 		var amount = parseFloat($('#create_amount').val());
 		var duration = parseInt($('#create_duration').val());
-		var errcode = create(account, duration, amount, 'finney');
+
+		if (typeof amount === 'undefined') {
+			amount = 0;
+		}
+		if (typeof duration === 'undefined') {
+			duration = 0;
+		}
+		var id = 5;
+		id = create(owner, duration, amount, 'finney');
 		if (!errcode) {
 			console.err('Create account failed');
 		}
-		frozenether.accounts.push(new Account(account, id, amount, duration));
+		frozenether.accounts.push(new frozenether.Account(owner, id));
 	});
 });
 

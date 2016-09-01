@@ -212,47 +212,40 @@ function lenghtenFrozenState(account, id, duration) {
 	return true;
 }
 
-function onCreate(owner, id, amount) {
-	if (!checkAccount(owner)) {
-		console.error('Account ' + owner + ' is invalid');
-		return false;
+function onEvent(owner, id, account) {
+	if (typeof account === 'undefined') {
+		account = getAccount(owner, id);
 	}
-	frozenether.accounts.push(new Account(owner, id, amount));
+	if (typeof account === 'undefined') {
+		console.error('Cannot get account(' + owner + '|' + id + ')');
+		return;
+	}
+	account.update();
+}
+
+function onCreate(owner, id, amount) {
+	var account = getAccount(owner, id);
+	if (typeof account === 'undefined') {
+		account = new frozenether.Account(owner, id);
+		frozenether.accounts.push(account);
+	}
+	onEvent(owner, id, account);
 }
 
 function onDestroy(owner, id) {
-	if (!checkAccount(owner)) {
-		console.error('Account ' + owner + ' is invalid');
-		return false;
-	}
-	var account = getAccount(owner, id);
+	onEvent(owner, id);
 }
 
 function onDeposit(owner, id, amount) {
-	if (!checkAccount(owner)) {
-		console.error('Account ' + owner + ' is invalid');
-		return false;
-	}
-	var account = getAccount(owner, id);
-	account.deposit(amount);
+	onEvent(owner, id);
 }
 
 function onWithdraw(owner, id, amount) {
-	if (!checkAccount(owner)) {
-		console.error('Account ' + owner + ' is invalid');
-		return false;
-	}
-	var account = getAccount(owner, id);
-	account.withdraw(amount);
+	onEvent(owner, id);
 }
 
 function onFreeze(owner, id, duration) {
-	if (!checkAccount(owner)) {
-		console.error('Account ' + owner + ' is invalid');
-		return false;
-	}
-	var account = getAccount(owner, id);
-	account.freeze(duration);
+	onEvent(owner, id);
 }
 
 function Events() {
@@ -264,62 +257,77 @@ function Events() {
 
 		if (typeof this.create === 'undefined') {
 			this.create = contract.Create({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.create.watch(function(error, data) {
+			this.create.watch(function(error, msg) {
 				if (error) {
 					console.error('Error with create event');
 					return;
 				}
-				console.log('Create event: owner: ' + data.args.owner + ' id: ' + data.args.id + ' amount: ' + data.args.amount);
-				onCreate(data.args.owner, data.args.id, data.args.amount);
+				if (!checkAccount(msg.args.owner)) {
+					return;
+				}
+				console.log('Create event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+				onCreate(msg.args.owner, msg.args.id, msg.args.amount);
 			});
 		}
 		return;
 
 		if (typeof this.destroy === 'undefined') {
 			this.destroy = contract.Destroy({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.destroy.watch(function(error, data) {
+			this.destroy.watch(function(error, msg) {
 				if (error) {
 					console.error('Error with destroy event');
 					return;
 				}
-				console.log('Destroy event: owner: ' + data.args.owner + ' id: ' + data.args.id);
-				onDestroy(data.args.owner, data.args.id);
+				if (!checkAccount(msg.args.owner)) {
+					return;
+				}
+				console.log('Destroy event: owner: ' + msg.args.owner + ' id: ' + msg.args.id);
+				onDestroy(msg.args.owner, msg.args.id);
 			});
 		}
 
 		if (typeof this.deposit === 'undefined') {
 			this.deposit = contract.Deposit({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-				this.deposit.watch(function(error, data) {
+				this.deposit.watch(function(error, msg) {
 				if (error) {
 					console.error('Error with deposit event');
 					return;
 				}
-				console.log('Deposit event: owner: ' + data.args.owner + ' id: ' + data.args.id + ' amount: ' + data.args.amount);
-				onDeposit(data.args.owner, data.args.id, data.args.amount);
+				if (!checkAccount(msg.args.owner)) {
+					return;
+				}
+				console.log('Deposit event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+				onDeposit(msg.args.owner, msg.args.id, msg.args.amount);
 			});
 		}
 
 		if (typeof this.withdraw === 'undefined') {
 			this.withdraw = contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.withdraw.watch(function(error, data) {
+			this.withdraw.watch(function(error, msg) {
 				if (error) {
 					console.error('Error with withdraw event');
 					return;
 				}
-				console.log('Withdraw event: owner: ' + data.args.owner + ' id: ' + data.args.id + ' amount: ' + data.args.amount);
-				onWithdraw(data.args.owner, data.args.id, data.args.amount);
+				if (!checkAccount(msg.args.owner)) {
+					return;
+				}
+				console.log('Withdraw event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+				onWithdraw(msg.args.owner, msg.args.id, msg.args.amount);
 			});
 		}
 
 		if (typeof this.freeze === 'undefined') {
 			this.freeze = contract.Freeze({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.freeze.watch(function(error, data) {
+			this.freeze.watch(function(error, msg) {
 				if (error) {
 					console.error('Error with freeze event');
 					return;
 				}
-				console.log('Freeze event: owner: ' + data.args.owner + ' id: ' + data.args.id + ' duration: ' + data.args.duration);
-				onFreeze(data.args.owner, data.args.id, data.args.duration);
+				if (!checkAccount(msg.args.owner)) {
+					return;
+				}
+				console.log('Freeze event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' duration: ' + msg.args.duration);
+				onFreeze(msg.args.owner, msg.args.id, msg.args.duration);
 			});
 		}
 	};
@@ -368,7 +376,7 @@ function initAccounts() {
 	len = web3.eth.accounts.length;
 	for (i = 0; i < len; i++) {
 		html = '<option value="' + web3.eth.accounts[i] + '">' + web3.eth.accounts[i] + '</option>'
-		$('#create_account').append(html);
+		$('#create_owner').append(html);
 	}
 }
 
