@@ -1,4 +1,4 @@
-function History(max) {
+frozenether.History = function(max) {
 	if (typeof max === 'integer') {
 		this.max = max;
 	} else {
@@ -7,7 +7,7 @@ function History(max) {
 	this.msgs = [];
 }
 
-History.prototype.push = function(msg) {
+frozenether.History.prototype.push = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}
@@ -17,7 +17,7 @@ History.prototype.push = function(msg) {
 	this.msgs.push(msg);
 }
 
-History.prototype.pop = function() {
+frozenether.History.prototype.pop = function() {
 	var msg = this.msgs.pop();
 	if (typeof msg === 'undefined') {
 		return undefined;
@@ -26,7 +26,7 @@ History.prototype.pop = function() {
 	return msg;
 }
 
-History.prototype.shift = function() {
+frozenether.History.prototype.shift = function() {
 	var msg = this.msgs.shift();
 	if (typeof msg === 'undefined') {
 		return undefined;
@@ -35,18 +35,18 @@ History.prototype.shift = function() {
 	return msg;
 }
 
-History.prototype.empty = function() {
+frozenether.History.prototype.empty = function() {
 	while (typeof this.pop() !== 'undefined') {
 	}
 }
 
-History.prototype.add = function(msg) {
+frozenether.History.prototype.add = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}
 }
 
-History.prototype.remove = function(msg) {
+frozenether.History.prototype.remove = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}

@@ -16,7 +16,7 @@ frozenether.getAccount = function(owner, id) {
 frozenether.Account = function(owner, id) {
 	this.owner = owner;
 	this.id = id;
-	this.history = new History();
+	this.history = new frozenether.History();
 	this.createHtml();
 	this.events();
 }
