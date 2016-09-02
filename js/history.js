@@ -1,8 +1,10 @@
+const FROZEN_ETHER_HISTORY_MAX = 8;
+
 frozenether.History = function(max) {
 	if (typeof max === 'integer') {
 		this.max = max;
 	} else {
-		this.max = 8;
+		this.max = FROZEN_ETHER_HISTORY_MAX;
 	}
 	this.msgs = [];
 }
@@ -51,4 +53,25 @@ frozenether.History.prototype.remove = function(msg) {
 		return;
 	}
 }
+
+frozenether.History.prototype.selector = function(string) {
+	var selector = '#' + this.msg.args.owner;
+	selector += '_' + this.msg.args.id.toString();
+	selector += '_' + this.msg.event;
+	selector += '_' + this.msg.blockNumber;
+	if (typeof suffix === 'string') {
+		selector += '_' + suffix;
+	}
+	return selector;
+}
+
+frozenether.History.prototype.createHtml = function() {
+	var html = '<div id="' + this.selector('event') + '">'
+	html += '<p>'
+	html += 'Event: ' + this.msg.event + '</br>'
+	html += '</p>'
+	html += '</div>'
+	$('#history').after(html);
+}
+
 

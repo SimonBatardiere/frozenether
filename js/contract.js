@@ -1,8 +1,8 @@
-const FROZEN_ETHER_ADDRESS = '0x0000000000000000000000000000000000000000';
-const FROZEN_ETHER_ADDRESS_TESTNET = '0xb466c54ac0edd7b84f2d186a64de1090afbbc4de';
-const FROZEN_ETHER_STARTING_BLOCK = 0;
-const FROZEN_ETHER_STARTING_BLOCK_TESTNET = 1536935;
-const FROZEN_ETHER_ABI = [{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"remainingTime","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"lenghtenFrozenState","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"amount","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"create","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"}],"name":"deposit","outputs":[{"name":"","type":"bool"}],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Create","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"}],"name":"Destroy","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"duration","type":"uint256"}],"name":"Freeze","type":"event"}];
+const FORZEN_ETHER_CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000000';
+const FORZEN_ETHER_CONTRACT_ADDRESS_TESTNET = '0xb466c54ac0edd7b84f2d186a64de1090afbbc4de';
+const FORZEN_ETHER_CONTRACT_STARTING_BLOCK = 0;
+const FORZEN_ETHER_CONTRACT_STARTING_BLOCK_TESTNET = 1536935;
+const FROZEN_ETHER_CONTRACT_ABI = [{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"remainingTime","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"lenghtenFrozenState","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"amount","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"create","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"}],"name":"deposit","outputs":[{"name":"","type":"bool"}],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Create","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"}],"name":"Destroy","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"duration","type":"uint256"}],"name":"Freeze","type":"event"}];
 
 function init() {
 	console.log('Initialize');
@@ -28,12 +28,12 @@ function initWeb3() {
 
 frozenether.Contract = function() {
 	this.contract = {};
-	this.startingBlock = FROZEN_ETHER_STARTING_BLOCK;
+	this.startingBlock = FORZEN_ETHER_CONTRACT_STARTING_BLOCK;
 	this.init();
 }
 
 frozenether.Contract.prototype.init = function() {
-	var contractAddress = FROZEN_ETHER_ADDRESS;
+	var contractAddress = FORZEN_ETHER_CONTRACT_ADDRESS;
 
 	web3.eth.getCode(contractAddress, function(error, code) {
 		if (error) {
@@ -43,10 +43,10 @@ frozenether.Contract.prototype.init = function() {
 
 		if (code.length < 3) {
 			console.log('Switch on test network');
-			contractAddress = FROZEN_ETHER_ADDRESS_TESTNET;
-			this.startingBlock = FROZEN_ETHER_STARTING_BLOCK_TESTNET;
+			contractAddress = FORZEN_ETHER_CONTRACT_ADDRESS_TESTNET;
+			this.startingBlock = FORZEN_ETHER_CONTRACT_STARTING_BLOCK_TESTNET;
 		}
-		this.contract = web3.eth.contract(FROZEN_ETHER_ABI).at(contractAddress);
+		this.contract = web3.eth.contract(FROZEN_ETHER_CONTRACT_ABI).at(contractAddress);
 		this.start();
 	})
 }
@@ -216,40 +216,40 @@ frozenether.Contract.prototype.lenghtenFrozenState = function(account, id, durat
 	return true;
 }
 
-frozenether.Contract.prototype.onEvent = function(owner, id, account) {
+frozenether.Contract.prototype.onEvent = function(msg, account) {
 	if (typeof account === 'undefined') {
-		account = getAccount(owner, id);
+		account = getAccount(msg.args.owner, msg.args.id);
 	}
 	if (typeof account === 'undefined') {
-		console.error('Cannot get account(' + owner + '|' + id + ')');
+		console.error('Cannot get account(' + msg.args.owner + '|' + msg.args.id.toString() + ')');
 		return;
 	}
-	account.update();
+	account.update(msg);
 }
 
-frozenether.Contract.prototype.onCreate = function(owner, id, amount) {
-	var account = getAccount(owner, id);
+frozenether.Contract.prototype.onCreate = function(msg) {
+	var account = getAccount(msg.args.owner, msg.args.id);
 	if (typeof account === 'undefined') {
-		account = new frozenether.Account(owner, id);
+		account = new frozenether.Account(msg.args.owner, msg.args.id);
 		frozenether.accounts.push(account);
 	}
-	onEvent(owner, id, account);
+	onEvent(msg, account);
 }
 
-frozenether.Contract.prototype.onDestroy = function(owner, id) {
-	onEvent(owner, id);
+frozenether.Contract.prototype.onDestroy = function(msg) {
+	onEvent(msg);
 }
 
-frozenether.Contract.prototype.onDeposit = function(owner, id, amount) {
-	onEvent(owner, id);
+frozenether.Contract.prototype.onDeposit = function(msg) {
+	onEvent(msg);
 }
 
-frozenether.Contract.prototype.onWithdraw = function(owner, id, amount) {
-	onEvent(owner, id);
+frozenether.Contract.prototype.onWithdraw = function(msg) {
+	onEvent(msg);
 }
 
-frozenether.Contract.prototype.onFreeze = function(owner, id, duration) {
-	onEvent(owner, id);
+frozenether.Contract.prototype.onFreeze = function(msg) {
+	onEvent(msg);
 }
 
 frozenether.Contract.prototype.watchEvents = function() {
@@ -270,7 +270,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Create event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onCreate(msg.args.owner, msg.args.id, msg.args.amount);
+		this.onCreate(msg);
 	});
 
 	watcher = this.contract.Destroy({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -283,7 +283,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Destroy event: owner: ' + msg.args.owner + ' id: ' + msg.args.id);
-		this.onDestroy(msg.args.owner, msg.args.id);
+		this.onDestroy(msg);
 	});
 
 	watcher = this.contract.Deposit({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -296,7 +296,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Deposit event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onDeposit(msg.args.owner, msg.args.id, msg.args.amount);
+		this.onDeposit(msg);
 	});
 
 	watcher = this.contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -309,7 +309,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Withdraw event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onWithdraw(msg.args.owner, msg.args.id, msg.args.amount);
+		this.onWithdraw(msg);
 	});
 
 	watcher = this.contract.Freeze({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -322,7 +322,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Freeze event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' duration: ' + msg.args.duration);
-		this.onFreeze(msg.args.owner, msg.args.id, msg.args.duration);
+		this.onFreeze(msg);
 	});
 }
 

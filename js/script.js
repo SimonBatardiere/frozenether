@@ -17,12 +17,15 @@ frozenether.Account = function(owner, id) {
 	this.history = new frozenether.History();
 	this.createHtml();
 	this.events();
+
+	$('#accounts_empty').hide();
+	$('#accounts_full').show();
 }
 
 frozenether.Account.prototype.selector = function(suffix) {
 	var selector = '#' + this.owner + '_' + this.id.toString();
 	if (typeof suffix === 'string') {
-		selector = selector + '_' + suffix;
+		selector += '_' + suffix;
 	}
 	return selector;
 }
@@ -56,7 +59,7 @@ frozenether.Account.prototype.createHtml = function() {
 frozenether.Account.prototype.destroy = function() {
 	var i, len;
 
-	len = frozenether.accounts.lenght;
+	len = frozenether.accounts.length;
 	for (i = 0; i < len; i++) {
 		if ((frozenether.accounts[i].owner == this.owner) &&
 				frozenether.accounts[i].id.eq(id)) {
@@ -64,6 +67,11 @@ frozenether.Account.prototype.destroy = function() {
 		}
 	}
 	$(this.selector('account')).remove();
+
+	if (frozenether.accounts.length <= 0) {
+		$('#accounts_empty').show();
+		$('#accounts_full').hide();
+	}
 }
 
 frozenether.Account.prototype.events = function() {
@@ -117,6 +125,8 @@ frozenether.Account.prototype.update = function(msg) {
 }
 
 $(function() {
+	$('#accounts_full').hide();
+
 	$('#create_button').on('click', function() {
 		var owner = $('#create_owner').val();
 		var amount = parseFloat($('#create_amount').val());
@@ -129,8 +139,8 @@ $(function() {
 		if (typeof duration === 'undefined') {
 			duration = 0;
 		}
-		id = frozenether.contract.create(owner, duration, amount, 'finney');
-		frozenether.accounts.push(new frozenether.Account(owner, id));
+		//id = frozenether.contract.create(owner, duration, amount, 'finney');
+		frozenether.accounts.push(new frozenether.Account(owner, 12));
 	});
 });
 
