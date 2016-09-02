@@ -1,0 +1,10 @@
+body {
+	padding-top: 10px;
+}
+
+[class*="col-"] {
+	border: 1px solid black;
+	border-radius: 6px;
+	line-height: 40px;
+}
+

@@ -6,26 +6,47 @@
 		<title>Frozen Ether</title>
 		<link rel="icon" href="favicon.ico"/>
 		<link rel="stylesheet" href="css/normalize.css"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+				integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+				crossorigin="anonymous"/>
+		<link rel="stylesheet" href="css/main.css"/>
 	</head>
+
 	<body>
-		<header>
-			<h1>Frozen Ether</h1>
+		<header class="container">
+			<div class="row">
+				<h1 class="col-sm-3">Frozen Ether</h1>
+				<form class="col-sm-9">
+					<p>
+						<label for="create_owner">Owner</label>: <select id="create_owner"/>
+							<option value="" disabled selected>Select your account's owner</option>
+						</select>
+						<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finney
+						<label for="create_duration">Duration</label>: <input type="number" id="create_duration"min="0"/> seconds
+						<input type="button" id="create_button" value="Create"/>
+					</p>
+				</form>
+			</div>
 		</header>
-		<section>
-			<h2>Create</h2>
-			<form>
-				<p>
-					<label for="create_owner">Owner</label>: <select id="create_owner"/>
-						<option value="" disabled selected>Select your account's owner</option>
-					</select></br>
-					<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finey</br>
-					<label for="create_duration">Duration</label>: <input type="number" id="create_duration"min="0"/> seconds</br>
-					<input type="button" id="create_button" value="Create"/>
-				</p>
-			</form>
-			<h2>Accounts</h2>
-			<div id="accounts"></div>
-		</section>
+
+		<div class="container">
+			<div class="row">
+				<nav class="col-sm-2">
+					<h2>Navigation</h2>
+				</nav>
+				<section class="col-sm-10">
+					<div class="col-sm-9">
+						<h2>Accounts</h2>
+						<div id="accounts"></div>
+					</div>
+					<aside class="col-sm-3">
+						<h2>History</h2>
+						<div id="history"></div>
+					</aside>
+				</section>
+			</div>
+		</div>
+
 		<script src="http://code.jquery.com/jquery-3.1.0.min.js"
 				integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
 				crossorigin="anonymous"></script>
