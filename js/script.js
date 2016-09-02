@@ -121,6 +121,7 @@ $(function() {
 		var owner = $('#create_owner').val();
 		var amount = parseFloat($('#create_amount').val());
 		var duration = parseInt($('#create_duration').val());
+		var id;
 
 		if (typeof amount === 'undefined') {
 			amount = 0;
@@ -128,11 +129,7 @@ $(function() {
 		if (typeof duration === 'undefined') {
 			duration = 0;
 		}
-		var id = 5;
-		id = create(owner, duration, amount, 'finney');
-		if (!errcode) {
-			console.err('Create account failed');
-		}
+		id = frozenether.contract.create(owner, duration, amount, 'finney');
 		frozenether.accounts.push(new frozenether.Account(owner, id));
 	});
 });

@@ -4,17 +4,13 @@ const FROZEN_ETHER_STARTING_BLOCK = 0;
 const FROZEN_ETHER_STARTING_BLOCK_TESTNET = 1536935;
 const FROZEN_ETHER_ABI = [{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"remainingTime","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"lenghtenFrozenState","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"amount","type":"uint256"}],"name":"withdraw","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":true,"inputs":[{"name":"id","type":"uint256"}],"name":"amount","outputs":[{"name":"","type":"uint256"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"},{"name":"duration","type":"uint256"}],"name":"create","outputs":[{"name":"","type":"bool"}],"type":"function"},{"constant":false,"inputs":[{"name":"id","type":"uint256"}],"name":"deposit","outputs":[{"name":"","type":"bool"}],"type":"function"},{"inputs":[],"type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Create","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"}],"name":"Destroy","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Withdraw","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"name":"owner","type":"address"},{"indexed":false,"name":"id","type":"uint256"},{"indexed":false,"name":"duration","type":"uint256"}],"name":"Freeze","type":"event"}];
 
-var contract;
-var startingBlock;
-var events;
-
 function init() {
 	console.log('Initialize');
 	if (!initWeb3()) {
 		return false;
 	}
-	initContract();
 	initAccounts();
+	frozenether.contract = new frozenether.Contract();
 	return true;
 }
 
@@ -30,28 +26,36 @@ function initWeb3() {
 	return true;
 }
 
-function initContract() {
+frozenether.Contract = function() {
+	this.contract = {};
+	this.startingBlock = FROZEN_ETHER_STARTING_BLOCK;
+	this.init();
+}
+
+frozenether.Contract.prototype.init = function() {
 	var contractAddress = FROZEN_ETHER_ADDRESS;
 
-	startingBlock = FROZEN_ETHER_STARTING_BLOCK;
-	web3.eth.getCode(contractAddress, function(error, result) {
+	web3.eth.getCode(contractAddress, function(error, code) {
 		if (error) {
 			console.error('Cannot get Ethereum contract\'s code for ' + contractAddress);
 			return;
 		}
 
-		if (result.length < 3) {
+		if (code.length < 3) {
 			console.log('Switch on test network');
 			contractAddress = FROZEN_ETHER_ADDRESS_TESTNET;
-			startingBlock = FROZEN_ETHER_STARTING_BLOCK_TESTNET;
+			this.startingBlock = FROZEN_ETHER_STARTING_BLOCK_TESTNET;
 		}
-		contract = web3.eth.contract(FROZEN_ETHER_ABI).at(contractAddress);
-		events = new Events();
-		events.start();
+		this.contract = web3.eth.contract(FROZEN_ETHER_ABI).at(contractAddress);
+		this.start();
 	})
 }
 
-function checkAccount(account) {
+frozenether.Contract.prototype.start = function() {
+	this.watchEvents();
+}
+
+frozenether.checkAccount = function(account) {
 	var i, len;
 
 	if (!web3.eth.accounts) {
@@ -67,42 +71,42 @@ function checkAccount(account) {
 	return false;
 }
 
-function remainingTime(account, id) {
-	if (!checkAccount(account)) {
+frozenether.Contract.prototype.remainingTime = function(account, id) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return 0;
 	}
-	return contract.remainingTime(id, {from: account});
+	return this.contract.remainingTime(id, {from: account});
 }
 
-function exist(account, id) {
+frozenether.Contract.prototype.exist = function(account, id) {
 	if (remainingTime(account, id) == 0) {
 		return false;
 	}
 	return true;
 }
 
-function amount(account, id) {
-	if (!checkAccount(account)) {
+frozenether.Contract.prototype.amount = function(account, id) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return 0;
 	}
-	return contract.amount(id, {from: account});
+	return this.contract.amount(id, {from: account});
 }
 
-function create(account, duration, amount, unit) {
-	var id = 0
+frozenether.Contract.prototype.create = function(account, duration, amount, unit) {
+	var id = 0;
 	var wei = 0;
 
-	if (!checkAccount(account)) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
-		return false;
+		return -1;
 	}
 
 	wei = web3.toWei(amount, unit);
 	if (isNaN(wei) || wei < 0) {
 		console.error('Amount is invalid');
-		return false;
+		return -1;
 	}
 
 	while (exist(account, id)) {
@@ -111,24 +115,24 @@ function create(account, duration, amount, unit) {
 
 	if (isNaN(duration) || duration < 0) {
 		console.error('Duration is invalid');
-		return false;
+		return -1;
 	}
 
 	console.log('Send create transaction: account: ' + account + ' id: ' + id + ' duration: ' + duration + ' amount: ' + wei);
-	contract.create(id, duration, {from: account, value: wei}, function(error) {
+	this.contract.create(id, duration, {from: account, value: wei}, function(error) {
 		if (error) {
 			console.error('Create transaction failed');
 			return;
 		}
 		console.log('Create transaction done');
 	});
-	return true;
+	return id;
 }
 
-function deposit(account, id, amount, unit) {
+frozenether.Contract.prototype.deposit = function(account, id, amount, unit) {
 	var wei = 0;
 
-	if (!checkAccount(account)) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return false;
 	}
@@ -145,7 +149,7 @@ function deposit(account, id, amount, unit) {
 	}
 
 	console.log('Send deposit transaction: account: ' + account + ' id: ' + id + ' amount: ' + wei);
-	contract.deposit(id, {from: account, value: wei}, function(error) {
+	this.contract.deposit(id, {from: account, value: wei}, function(error) {
 		if (error) {
 			console.error('Deposit transaction failed');
 			return;
@@ -155,10 +159,10 @@ function deposit(account, id, amount, unit) {
 	return true;
 }
 
-function withdraw(account, id, amount, unit) {
+frozenether.Contract.prototype.withdraw = function(account, id, amount, unit) {
 	var wei = 0;
 
-	if (!checkAccount(account)) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return false;
 	}
@@ -175,7 +179,7 @@ function withdraw(account, id, amount, unit) {
 	}
 
 	console.log('Send withdraw transaction: account: ' + account + ' id: ' + id + ' amount: ' + wei);
-	contract.withdraw(id, wei, {from: account}, function(error) {
+	this.contract.withdraw(id, wei, {from: account}, function(error) {
 		if (error) {
 			console.error('Withdraw transaction failed');
 			return;
@@ -185,8 +189,8 @@ function withdraw(account, id, amount, unit) {
 	return true;
 }
 
-function lenghtenFrozenState(account, id, duration) {
-	if (!checkAccount(account)) {
+frozenether.Contract.prototype.lenghtenFrozenState = function(account, id, duration) {
+	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return false;
 	}
@@ -202,7 +206,7 @@ function lenghtenFrozenState(account, id, duration) {
 	}
 
 	console.log('Send lengthen frozen state transaction: account: ' + account + ' id: ' + id + ' duration: ' + duration);
-	contract.lenghtenFrozenState(id, duration, {from: account}, function(error) {
+	this.contract.lenghtenFrozenState(id, duration, {from: account}, function(error) {
 		if (error) {
 			console.error('Lengthen frozen state transaction failed');
 			return;
@@ -212,9 +216,9 @@ function lenghtenFrozenState(account, id, duration) {
 	return true;
 }
 
-function onEvent(owner, id, account) {
+frozenether.Contract.prototype.onEvent = function(owner, id, account) {
 	if (typeof account === 'undefined') {
-		account = frozenether.getAccount(owner, id);
+		account = getAccount(owner, id);
 	}
 	if (typeof account === 'undefined') {
 		console.error('Cannot get account(' + owner + '|' + id + ')');
@@ -223,8 +227,8 @@ function onEvent(owner, id, account) {
 	account.update();
 }
 
-function onCreate(owner, id, amount) {
-	var account = frozenether.getAccount(owner, id);
+frozenether.Contract.prototype.onCreate = function(owner, id, amount) {
+	var account = getAccount(owner, id);
 	if (typeof account === 'undefined') {
 		account = new frozenether.Account(owner, id);
 		frozenether.accounts.push(account);
@@ -232,137 +236,95 @@ function onCreate(owner, id, amount) {
 	onEvent(owner, id, account);
 }
 
-function onDestroy(owner, id) {
+frozenether.Contract.prototype.onDestroy = function(owner, id) {
 	onEvent(owner, id);
 }
 
-function onDeposit(owner, id, amount) {
+frozenether.Contract.prototype.onDeposit = function(owner, id, amount) {
 	onEvent(owner, id);
 }
 
-function onWithdraw(owner, id, amount) {
+frozenether.Contract.prototype.onWithdraw = function(owner, id, amount) {
 	onEvent(owner, id);
 }
 
-function onFreeze(owner, id, duration) {
+frozenether.Contract.prototype.onFreeze = function(owner, id, duration) {
 	onEvent(owner, id);
 }
 
-function Events() {
-	this.start = function() {
-		if (!web3.eth.accounts) {
-			console.error('No accounts configured');
+frozenether.Contract.prototype.watchEvents = function() {
+	var watcher;
+
+	if (!web3.eth.accounts) {
+		console.error('No accounts configured');
+		return;
+	}
+
+	watcher = this.contract.Create({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
+	watcher.watch(function(error, msg) {
+		if (error) {
+			console.error('Error with create event');
 			return;
 		}
-
-		if (typeof this.create === 'undefined') {
-			this.create = contract.Create({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.create.watch(function(error, msg) {
-				if (error) {
-					console.error('Error with create event');
-					return;
-				}
-				if (!checkAccount(msg.args.owner)) {
-					return;
-				}
-				console.log('Create event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-				onCreate(msg.args.owner, msg.args.id, msg.args.amount);
-			});
+		if (!frozenether.checkAccount(msg.args.owner)) {
+			return;
 		}
+		console.log('Create event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+		this.onCreate(msg.args.owner, msg.args.id, msg.args.amount);
+	});
 
-		if (typeof this.destroy === 'undefined') {
-			this.destroy = contract.Destroy({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.destroy.watch(function(error, msg) {
-				if (error) {
-					console.error('Error with destroy event');
-					return;
-				}
-				if (!checkAccount(msg.args.owner)) {
-					return;
-				}
-				console.log('Destroy event: owner: ' + msg.args.owner + ' id: ' + msg.args.id);
-				onDestroy(msg.args.owner, msg.args.id);
-			});
+	watcher = this.contract.Destroy({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
+	watcher.watch(function(error, msg) {
+		if (error) {
+			console.error('Error with destroy event');
+			return;
 		}
-
-		if (typeof this.deposit === 'undefined') {
-			this.deposit = contract.Deposit({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-				this.deposit.watch(function(error, msg) {
-				if (error) {
-					console.error('Error with deposit event');
-					return;
-				}
-				if (!checkAccount(msg.args.owner)) {
-					return;
-				}
-				console.log('Deposit event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-				onDeposit(msg.args.owner, msg.args.id, msg.args.amount);
-			});
+		if (!frozenether.checkAccount(msg.args.owner)) {
+			return;
 		}
+		console.log('Destroy event: owner: ' + msg.args.owner + ' id: ' + msg.args.id);
+		this.onDestroy(msg.args.owner, msg.args.id);
+	});
 
-		if (typeof this.withdraw === 'undefined') {
-			this.withdraw = contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.withdraw.watch(function(error, msg) {
-				if (error) {
-					console.error('Error with withdraw event');
-					return;
-				}
-				if (!checkAccount(msg.args.owner)) {
-					return;
-				}
-				console.log('Withdraw event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-				onWithdraw(msg.args.owner, msg.args.id, msg.args.amount);
-			});
+	watcher = this.contract.Deposit({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
+	watcher.watch(function(error, msg) {
+		if (error) {
+			console.error('Error with deposit event');
+			return;
 		}
-
-		if (typeof this.freeze === 'undefined') {
-			this.freeze = contract.Freeze({owner: web3.eth.accounts}, {fromBlock: startingBlock});
-			this.freeze.watch(function(error, msg) {
-				if (error) {
-					console.error('Error with freeze event');
-					return;
-				}
-				if (!checkAccount(msg.args.owner)) {
-					return;
-				}
-				console.log('Freeze event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' duration: ' + msg.args.duration);
-				onFreeze(msg.args.owner, msg.args.id, msg.args.duration);
-			});
+		if (!frozenether.checkAccount(msg.args.owner)) {
+			return;
 		}
-	};
+		console.log('Deposit event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+		this.onDeposit(msg.args.owner, msg.args.id, msg.args.amount);
+	});
 
-	this.stop = function() {
-		if (typeof this.create !== 'undefined') {
-			this.create.stopWatching();
-			delete this.create;
+	watcher = this.contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
+	watcher.watch(function(error, msg) {
+		if (error) {
+			console.error('Error with withdraw event');
+			return;
 		}
-
-		if (typeof this.destroy !== 'undefined') {
-			this.destroy.stopWatching();
-			delete this.destroy;
+		if (!frozenether.checkAccount(msg.args.owner)) {
+			return;
 		}
+		console.log('Withdraw event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
+		this.onWithdraw(msg.args.owner, msg.args.id, msg.args.amount);
+	});
 
-		if (typeof this.deposit !== 'undefined') {
-			this.deposit.stopWatching();
-			delete this.deposit;
+	watcher = this.contract.Freeze({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
+	watcher.watch(function(error, msg) {
+		if (error) {
+			console.error('Error with freeze event');
+			return;
 		}
-
-		if (typeof this.withdraw !== 'undefined') {
-			this.withdraw.stopWatching();
-			delete this.withdraw;
+		if (!frozenether.checkAccount(msg.args.owner)) {
+			return;
 		}
-
-		if (typeof this.freeze !== 'undefined') {
-			this.freeze.stopWatching();
-			delete this.freeze;
-		}
-	};
-
-	this.restart = function() {
-		this.stop();
-		this.start();
-	};
-};
+		console.log('Freeze event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' duration: ' + msg.args.duration);
+		this.onFreeze(msg.args.owner, msg.args.id, msg.args.duration);
+	});
+}
 
 function initAccounts() {
 	var i, len, html;
