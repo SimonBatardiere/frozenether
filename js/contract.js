@@ -33,6 +33,7 @@ frozenether.Contract = function() {
 }
 
 frozenether.Contract.prototype.init = function() {
+	var contract = this;
 	var contractAddress = FORZEN_ETHER_CONTRACT_ADDRESS;
 
 	web3.eth.getCode(contractAddress, function(error, code) {
@@ -44,10 +45,10 @@ frozenether.Contract.prototype.init = function() {
 		if (code.length < 3) {
 			console.log('Switch on test network');
 			contractAddress = FORZEN_ETHER_CONTRACT_ADDRESS_TESTNET;
-			this.startingBlock = FORZEN_ETHER_CONTRACT_STARTING_BLOCK_TESTNET;
+			contract.startingBlock = FORZEN_ETHER_CONTRACT_STARTING_BLOCK_TESTNET;
 		}
-		this.contract = web3.eth.contract(FROZEN_ETHER_CONTRACT_ABI).at(contractAddress);
-		this.start();
+		contract.contract = web3.eth.contract(FROZEN_ETHER_CONTRACT_ABI).at(contractAddress);
+		contract.start();
 	})
 }
 
@@ -218,7 +219,7 @@ frozenether.Contract.prototype.lenghtenFrozenState = function(account, id, durat
 
 frozenether.Contract.prototype.onEvent = function(msg, account) {
 	if (typeof account === 'undefined') {
-		account = getAccount(msg.args.owner, msg.args.id);
+		account = frozenether.getAccount(msg.args.owner, msg.args.id);
 	}
 	if (typeof account === 'undefined') {
 		console.error('Cannot get account(' + msg.args.owner + '|' + msg.args.id.toString() + ')');
@@ -228,32 +229,33 @@ frozenether.Contract.prototype.onEvent = function(msg, account) {
 }
 
 frozenether.Contract.prototype.onCreate = function(msg) {
-	var account = getAccount(msg.args.owner, msg.args.id);
+	var account = frozenether.getAccount(msg.args.owner, msg.args.id);
 	if (typeof account === 'undefined') {
 		account = new frozenether.Account(msg.args.owner, msg.args.id);
 		frozenether.accounts.push(account);
 	}
-	onEvent(msg, account);
+	this.onEvent(msg, account);
 }
 
 frozenether.Contract.prototype.onDestroy = function(msg) {
-	onEvent(msg);
+	this.onEvent(msg);
 }
 
 frozenether.Contract.prototype.onDeposit = function(msg) {
-	onEvent(msg);
+	this.onEvent(msg);
 }
 
 frozenether.Contract.prototype.onWithdraw = function(msg) {
-	onEvent(msg);
+	this.onEvent(msg);
 }
 
 frozenether.Contract.prototype.onFreeze = function(msg) {
-	onEvent(msg);
+	this.onEvent(msg);
 }
 
 frozenether.Contract.prototype.watchEvents = function() {
 	var watcher;
+	var contract = this;
 
 	if (!web3.eth.accounts) {
 		console.error('No accounts configured');
@@ -270,7 +272,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Create event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onCreate(msg);
+		contract.onCreate(msg);
 	});
 
 	watcher = this.contract.Destroy({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -283,7 +285,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Destroy event: owner: ' + msg.args.owner + ' id: ' + msg.args.id);
-		this.onDestroy(msg);
+		contract.onDestroy(msg);
 	});
 
 	watcher = this.contract.Deposit({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -296,7 +298,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Deposit event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onDeposit(msg);
+		contract.onDeposit(msg);
 	});
 
 	watcher = this.contract.Withdraw({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -309,7 +311,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Withdraw event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' amount: ' + msg.args.amount);
-		this.onWithdraw(msg);
+		contract.onWithdraw(msg);
 	});
 
 	watcher = this.contract.Freeze({owner: web3.eth.accounts}, {fromBlock: this.startingBlock});
@@ -322,7 +324,7 @@ frozenether.Contract.prototype.watchEvents = function() {
 			return;
 		}
 		console.log('Freeze event: owner: ' + msg.args.owner + ' id: ' + msg.args.id + ' duration: ' + msg.args.duration);
-		this.onFreeze(msg);
+		contract.onFreeze(msg);
 	});
 }
 

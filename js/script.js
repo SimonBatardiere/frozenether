@@ -103,11 +103,11 @@ frozenether.Account.prototype.events = function() {
 }
 
 frozenether.Account.prototype.amount = function() {
-	return amount(this.owner, this.id);
+	return frozenether.contract.amount(this.owner, this.id);
 }
 
 frozenether.Account.prototype.remainingTime = function() {
-	return remainingTime(this.owner, this.id);
+	return frozenether.contract.remainingTime(this.owner, this.id);
 }
 
 frozenether.Account.prototype.update = function(msg) {
