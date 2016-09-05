@@ -16,16 +16,9 @@
 		<header class="container">
 			<div class="row">
 				<h1 class="col-sm-3">Frozen Ether</h1>
-				<form class="col-sm-9">
-					<p>
-						<label for="create_owner">Owner</label>: <select id="create_owner">
-							<option value="" disabled selected>Select your account's owner</option>
-						</select>
-						<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finney
-						<label for="create_duration">Duration</label>: <input type="number" id="create_duration" min="0"/> seconds
-						<input type="button" id="create_button" value="Create"/>
-					</p>
-				</form>
+				<div class="col-sm-9">
+					<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
+				</div>
 			</div>
 		</header>
 
@@ -36,6 +29,7 @@
 				</nav>
 				<section class="col-sm-10">
 					<div class="col-sm-9" id="accounts_empty">
+						<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
 						<p>You should create a new account</p>
 					</div>
 					<div class="col-sm-9" id="accounts_full">
@@ -50,8 +44,34 @@
 			</div>
 		</div>
 
+		<div class="modal" id="popup_create_account">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">x</button>
+						<h2 class="modal-title">Add new account</h2>
+					</div>
+					<div class="modal-body">
+						<p>
+							<label for="create_owner">Owner</label>: <select id="create_owner">
+								<option value="" disabled selected>Select your account's owner</option>
+							</select></br>
+							<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finney</br>
+							<label for="create_duration">Duration</label>: <input type="number" id="create_duration" min="0"/> seconds</br>
+							<input type="button" id="create_button" value="Create"/>
+						</p>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
 		<script src="http://code.jquery.com/jquery-3.1.0.min.js"
 				integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+				crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
 				crossorigin="anonymous"></script>
 		<script src="js/frozenether.js"></script>
 		<script src="js/script.js"></script>
