@@ -11,10 +11,21 @@ frozenether.getAccount = function(owner, id) {
 	return undefined;
 }
 
+frozenether.updateTotalAmount = function() {
+	var i, len;
+	var amount = new BigNumber(0);
+
+	len = frozenether.accounts.length;
+	for (i = 0; i < len; i++) {
+		amount = amount.plus(frozenether.accounts[i].amount());
+	}
+	$(this.selector('total_amount')).text(web3.fromWei(amount, 'finney'));
+}
+
 frozenether.Account = function(owner, id) {
 	this.owner = owner;
 	this.id = new BigNumber(id);
-	this.history = new frozenether.History();
+	this.history = new frozenether.History(this.selector('history'));
 	this.createHtml();
 	this.events();
 
@@ -122,6 +133,7 @@ frozenether.Account.prototype.update = function(msg) {
 	if (amount <= 0) {
 		this.destroy();
 	}
+	updateTotalAmount();
 }
 
 $(function() {
@@ -143,5 +155,4 @@ $(function() {
 		frozenether.accounts.push(new frozenether.Account(owner, 12));
 	});
 });
-
 

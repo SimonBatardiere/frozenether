@@ -29,6 +29,7 @@ function initWeb3() {
 frozenether.Contract = function() {
 	this.contract = {};
 	this.startingBlock = FORZEN_ETHER_CONTRACT_STARTING_BLOCK;
+	this.history = new frozenether.History('history');
 	this.init();
 }
 
@@ -218,6 +219,9 @@ frozenether.Contract.prototype.lenghtenFrozenState = function(account, id, durat
 }
 
 frozenether.Contract.prototype.onEvent = function(msg, account) {
+	if (typeof msg !== 'undefined') {
+		this.history.push(msg);
+	}
 	if (typeof account === 'undefined') {
 		account = frozenether.getAccount(msg.args.owner, msg.args.id);
 	}
