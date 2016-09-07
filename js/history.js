@@ -48,11 +48,11 @@ frozenether.History.prototype.add = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}
-	var html = '<div id="' + this.selector(msg, 'event') + '">'
-	html += '<p>'
-	html += 'Event: ' + this.msg.event + '</br>'
-	html += '</p>'
-	html += '</div>'
+	var html = '<div id="' + this.selector(msg, 'event') + '">';
+	html += '<p>';
+	html += 'Event: ' + this.msg.event + '<br>';
+	html += '</p>';
+	html += '</div>';
 	$('#' + this.id).after(html);
 }
 

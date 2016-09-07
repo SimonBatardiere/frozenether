@@ -42,29 +42,43 @@ frozenether.Account.prototype.selector = function(suffix) {
 }
 
 frozenether.Account.prototype.createHtml = function() {
-	var html = '<div id="' + this.selector('account') + '">'
-	html += '<h3>Configuration</h3>'
-	html += '<p>'
-	html += 'Owner: ' + this.owner + '</br>'
-	html += 'Identifier: ' + this.id.toString() + '</br>'
-	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount() + '</span> wei</br>'
-	html += 'Duration:<span id="' + this.selector('data_duration') + '">' + this.remainingTime() + '</span> seconds</br>'
-	html += '</p>'
-	html += '<h3>Actions</h3>'
-	html += '<form>'
-	html += '<p>'
-	html += '<label id="' + this.selector('action_amount') + '">Amount</label>: '
-	html += '<input type="text" id="' + this.selector('action_amount') + '" placeholder="0"></input></br>'
-	html += '<label id="' + this.selector('action_duration') + '">Duration</label>: '
-	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '" placeholder="0"></input></br>'
-	html += '<input type="button" id="' + this.selector('deposit') + '" value="Deposit"></input>'
-	html += '<input type="button" id="' + this.selector('withdraw') + '" value="Withdraw"></input>'
-	html += '<input type="button" id="' + this.selector('freeze') + '" value="Freeze"></input>'
-	html += '</br>'
-	html += '</p>'
-	html += '</form>'
-	html += '</div>'
+	var html = '<p id="' + this.selector('account') + '">';
+	html += 'Owner: ' + this.owner + '<br>';
+	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount() + '</span> wei<br>';
+	html += '<input type="button" id="' + this.selector('modify') + '" value="Modify"></input>';
+	html += '</p>';
 	$('#accounts').after(html);
+
+	html = '<section id="' + this.selector('page_account') + '" class="col-sm-10">';
+	html += '<div class="col-sm-9">';
+	html += '<h3>Configuration</h3>';
+	html += '<p>';
+	html += 'Owner: ' + this.owner + '<br>';
+	html += 'Identifier: ' + this.id.toString() + '<br>';
+	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount() + '</span> wei<br>';
+	html += 'Duration:<span id="' + this.selector('data_duration') + '">' + this.remainingTime() + '</span> seconds<br>';
+	html += '</p>';
+	html += '<h3>Actions</h3>';
+	html += '<form>';
+	html += '<p>';
+	html += '<label id="' + this.selector('action_amount') + '">Amount</label>: ';
+	html += '<input type="text" id="' + this.selector('action_amount') + '" placeholder="0"></input><br>';
+	html += '<label id="' + this.selector('action_duration') + '">Duration</label>: ';
+	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '" placeholder="0"></input><br>';
+	html += '<input type="button" id="' + this.selector('deposit') + '" value="Deposit"></input>';
+	html += '<input type="button" id="' + this.selector('withdraw') + '" value="Withdraw"></input>';
+	html += '<input type="button" id="' + this.selector('freeze') + '" value="Freeze"></input>';
+	html += '<input type="button" id="' + this.selector('close') + '" value="Close"></input>';
+	html += '<br>';
+	html += '</p>';
+	html += '</form>';
+	html += '</div>';
+	html += '<aside class="col-sm-3">';
+	html += '<h2>History</h2>';
+	html += '<div id="' + this.selector('history') + '"></div>'
+	html += '</aside>';
+	html += '</section>';
+	$('#pages').after(html);
 }
 
 frozenether.Account.prototype.destroy = function() {
@@ -88,6 +102,11 @@ frozenether.Account.prototype.destroy = function() {
 frozenether.Account.prototype.events = function() {
 	var account = this;
 
+	$(this.selector('modify')).on('click', function() {
+		$('#accounts_full').hide();
+		$(this.selector('page_account')).show();
+	});
+
 	$(this.selector('deposit')).on('click', function() {
 		var amount = parseFloat($(this.selector('action_amount')).val());
 		var errcode = deposit(account.account, account.id, amount, 'finney');
@@ -110,6 +129,11 @@ frozenether.Account.prototype.events = function() {
 		if (!errcode) {
 			console.err('Freeze  account failed');
 		}
+	});
+
+	$(this.selector('close')).on('click', function() {
+		$(this.selector('page_account')).hide();
+		$('#accounts_full').show();
 	});
 }
 
@@ -137,6 +161,7 @@ frozenether.Account.prototype.update = function(msg) {
 }
 
 $(function() {
+	$('#page_parameters').hide();
 	$('#accounts_full').hide();
 
 	$('#create_button').on('click', function() {
@@ -151,8 +176,18 @@ $(function() {
 		if (typeof duration === 'undefined') {
 			duration = 0;
 		}
-		//id = frozenether.contract.create(owner, duration, amount, 'finney');
-		frozenether.accounts.push(new frozenether.Account(owner, 12));
+		id = frozenether.contract.create(owner, duration, amount, 'finney');
+		frozenether.accounts.push(new frozenether.Account(owner, id));
+	});
+
+	$('#parameters_button').on('click', function() {
+		$('#page_accounts').toggle();
+		$('#page_parameters').toggle();
+	});
+
+	$('#close_parameters').on('click', function() {
+		$('#page_parameters').hide();
+		$('#page_accounts').show();
 	});
 });
 
