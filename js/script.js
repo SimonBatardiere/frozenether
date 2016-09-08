@@ -183,11 +183,41 @@ $(function() {
 	$('#parameters_button').on('click', function() {
 		$('#page_accounts').toggle();
 		$('#page_parameters').toggle();
+
+		$('input[name="parameter_language"][value="' + localStorage.getItem('language') + '"]').prop('checked', true);
+		$('input[name="parameter_mode"][value="' + localStorage.getItem('mode') + '"]').prop('checked', true);
+		$('#parameter_history_size').val(localStorage.getItem('history_size'));
 	});
 
 	$('#close_parameters').on('click', function() {
 		$('#page_parameters').hide();
 		$('#page_accounts').show();
 	});
+
+	$('#apply_parameters').on('click', function() {
+		localStorage.setItem('language', $('input[name="parameter_language"]:checked').val());
+		localStorage.setItem('mode', $('input[name="parameter_mode"]:checked').val());
+		localStorage.setItem('history_size', $('#parameter_history_size').val());
+		$('#page_parameters').hide();
+		$('#page_accounts').show();
+	});
 });
+
+$(function() {
+	var language = localStorage.getItem('language');
+	if (typeof language === 'undefined') {
+		localStorage.setItem('language', 'english');
+	}
+
+	var mode = localStorage.getItem('mode');
+	if (typeof mode === 'undefined') {
+		localStorage.setItem('mode', 'basic');
+	}
+
+	var history_size = localStorage.getItem('history_size');
+	if (typeof history_size === 'undefined') {
+		localStorage.setItem('history_size', 8);
+	}
+});
+
 

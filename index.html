@@ -47,6 +47,16 @@
 				</section>
 				<section id="page_parameters" class="col-sm-10">
 					<h2>Parameters</h2>
+					<form>
+						<label for="parameter_language">Language</label>:
+						<input type="radio" name="parameter_language" value="english">English</input>
+						<input type="radio" name="parameter_language" value="french">Français</input><br>
+						<label for="parameter_mode">Mode</label>:
+						<input type="radio" name="parameter_mode" value="basic">Basic</input>
+						<input type="radio" name="parameter_mode" value="advanced">Advanced</input><br>
+						<label for="create_duration">History size</label>: <input type="number" id="parameter_history_size" min="0"/><br>
+						<input type="button" id="apply_parameters" value="Apply"/>
+					</form>
 					<input type="button" id="close_parameters" value="Close"/>
 				</section>
 			</div>
