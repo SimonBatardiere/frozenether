@@ -79,6 +79,7 @@ frozenether.Account.prototype.createHtml = function() {
 	html += '</aside>';
 	html += '</section>';
 	$('#pages').after(html);
+	$(this.selector('page_account')).hide();
 }
 
 frozenether.Account.prototype.destroy = function() {
