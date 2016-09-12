@@ -111,9 +111,9 @@ frozenether.Contract.prototype.create = function(account, duration, amount, unit
 		return -1;
 	}
 
-	while (exist(account, id)) {
+	do {
 		id = Math.floor(Math.random() * 65536);
-	}
+	} while (exist(account, id));
 
 	if (isNaN(duration) || duration < 0) {
 		console.error('Duration is invalid');
