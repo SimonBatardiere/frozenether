@@ -1,5 +1,3 @@
-const FROZEN_ETHER_HISTORY_MAX = 8;
-
 frozenether.History = function(id, max) {
 	this.id = id;
 	if (typeof max === 'integer') {
@@ -50,10 +48,10 @@ frozenether.History.prototype.add = function(msg) {
 	}
 	var html = '<div id="' + this.selector(msg, 'event') + '">';
 	html += '<p>';
-	html += 'Event: ' + this.msg.event + '<br>';
+	html += 'Event: ' + msg.event + '<br>';
 	html += '</p>';
 	html += '</div>';
-	$('#' + this.id).after(html);
+	//$('#' + this.id).append(html);
 }
 
 frozenether.History.prototype.remove = function(msg) {

@@ -11,6 +11,22 @@ frozenether.getAccount = function(owner, id) {
 	return undefined;
 }
 
+frozenether.amountToString = function(amount) {
+	var string = '';
+	var units = ['wei', 'Kwei', 'Mwei', 'Gwei', 'szabo', 'finney', 'ether', 'Kether', 'Mether', 'Gether', 'Tether'];
+	var i = 0;
+	var len = units.length;
+
+	do {
+		if (amount.lessThan(1000)) {
+			string = amount.round(3).toString() + ' ' + units[i];
+			return string;
+		}
+		i++;
+	} while (amount = amount.div(1000));
+	return 'unknwon';
+}
+
 frozenether.updateTotalAmount = function() {
 	var i, len;
 	var amount = new BigNumber(0);
@@ -19,7 +35,7 @@ frozenether.updateTotalAmount = function() {
 	for (i = 0; i < len; i++) {
 		amount = amount.plus(frozenether.accounts[i].amount());
 	}
-	$(this.selector('total_amount')).text(web3.fromWei(amount, 'finney'));
+	$('#total_amount').text(frozenether.amountToString(amount));
 }
 
 frozenether.Account = function(owner, id) {
@@ -43,8 +59,8 @@ frozenether.Account.prototype.selector = function(suffix) {
 
 frozenether.Account.prototype.createHtml = function() {
 	var html = '<p id="' + this.selector('account') + '">';
-	html += 'Owner: ' + this.owner + '<br>';
-	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount() + '</span> wei<br>';
+	html += 'Owner: ' + this.owner + ' ';
+	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + frozenether.amountToString(this.amount()) + '</span> ';
 	html += '<input type="button" id="' + this.selector('modify') + '" value="Modify"></input>';
 	html += '</p>';
 	$('#accounts').after(html);
@@ -55,7 +71,7 @@ frozenether.Account.prototype.createHtml = function() {
 	html += '<p>';
 	html += 'Owner: ' + this.owner + '<br>';
 	html += 'Identifier: ' + this.id.toString() + '<br>';
-	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + this.amount() + '</span> wei<br>';
+	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + frozenether.amountToString(this.amount()) + '</span><br>';
 	html += 'Duration:<span id="' + this.selector('data_duration') + '">' + this.remainingTime() + '</span> seconds<br>';
 	html += '</p>';
 	html += '<h3>Actions</h3>';
@@ -78,7 +94,7 @@ frozenether.Account.prototype.createHtml = function() {
 	html += '<div id="' + this.selector('history') + '"></div>'
 	html += '</aside>';
 	html += '</section>';
-	$('#pages').after(html);
+	$('#pages').append(html);
 	$(this.selector('page_account')).hide();
 }
 
@@ -158,7 +174,7 @@ frozenether.Account.prototype.update = function(msg) {
 	if (amount <= 0) {
 		this.destroy();
 	}
-	updateTotalAmount();
+	frozenether.updateTotalAmount();
 }
 
 frozenether.changePage = function(page) {
