@@ -161,9 +161,31 @@ frozenether.Account.prototype.update = function(msg) {
 	updateTotalAmount();
 }
 
-$(function() {
+frozenether.changePage = function(page) {
+	if (typeof frozenether.current_page !== 'undefined') {
+		$(frozenether.current_page).hide();
+	}
+	if (typeof page === 'undefined') {
+		page = frozenether.previous_page;
+	}
+	if (typeof page === 'undefined') {
+		page = '#page_presentation';
+	}
+	$(page).show();
+	frozenether.previous_page = frozenether.current_page;
+	frozenether.current_page = page;
+}
+
+frozenether.initNav = function() {
+	$('#page_accounts').hide();
+	$('#page_help').hide();
 	$('#page_parameters').hide();
 	$('#accounts_full').hide();
+	frozenether.changePage();
+}
+
+$(function() {
+	frozenether.initNav();
 
 	$('#create_button').on('click', function() {
 		var owner = $('#create_owner').val();
@@ -182,25 +204,33 @@ $(function() {
 	});
 
 	$('#parameters_button').on('click', function() {
-		$('#page_accounts').toggle();
-		$('#page_parameters').toggle();
-
+		frozenether.changePage('#page_parameters');
 		$('input[name="parameter_language"][value="' + localStorage.getItem('language') + '"]').prop('checked', true);
 		$('input[name="parameter_mode"][value="' + localStorage.getItem('mode') + '"]').prop('checked', true);
 		$('#parameter_history_size').val(localStorage.getItem('history_size'));
 	});
 
 	$('#close_parameters').on('click', function() {
-		$('#page_parameters').hide();
-		$('#page_accounts').show();
+		frozenether.changePage();
 	});
 
 	$('#apply_parameters').on('click', function() {
 		localStorage.setItem('language', $('input[name="parameter_language"]:checked').val());
 		localStorage.setItem('mode', $('input[name="parameter_mode"]:checked').val());
 		localStorage.setItem('history_size', $('#parameter_history_size').val());
-		$('#page_parameters').hide();
-		$('#page_accounts').show();
+		frozenether.changePage();
+	});
+
+	$('#navigation_presentation').on('click', function() {
+		frozenether.changePage('#page_presentation');
+	});
+
+	$('#navigation_accounts').on('click', function() {
+		frozenether.changePage('#page_accounts');
+	});
+
+	$('#navigation_help').on('click', function() {
+		frozenether.changePage('#page_help');
 	});
 });
 
