@@ -41,7 +41,7 @@ frozenether.updateTotalAmount = function() {
 frozenether.Account = function(owner, id) {
 	this.owner = owner;
 	this.id = new BigNumber(id);
-	this.history = new frozenether.History(this.selector('history'));
+	this.history = new frozenether.History(this.identifier('history'));
 	this.createHtml();
 	this.events();
 
@@ -49,53 +49,58 @@ frozenether.Account = function(owner, id) {
 	$('#accounts_full').show();
 }
 
-frozenether.Account.prototype.selector = function(suffix) {
-	var selector = '#' + this.owner + '_' + this.id.toString();
+frozenether.Account.prototype.identifier = function(suffix) {
+	var identifier = 'account_' + this.owner + '_' + this.id.toString();
 	if (typeof suffix === 'string') {
-		selector += '_' + suffix;
+		identfier += '_' + suffix;
 	}
+	return identifier;
+}
+
+frozenether.Account.prototype.selector = function(suffix) {
+	var selector = '#' + this.identifier(suffix);
 	return selector;
 }
 
 frozenether.Account.prototype.createHtml = function() {
-	var html = '<p id="' + this.selector('account') + '">';
+	var html = '<p id="' + this.identifier() + '">';
 	html += 'Owner: ' + this.owner + ' ';
-	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + frozenether.amountToString(this.amount()) + '</span> ';
-	html += '<input type="button" id="' + this.selector('modify') + '" value="Modify"></input>';
+	html += 'Amount: <span id="' + this.identifier('amount') + '">' + frozenether.amountToString(this.amount()) + '</span> ';
+	html += '<input type="button" id="' + this.identifier('modify') + '" value="Modify"></input>';
 	html += '</p>';
 	$('#accounts').after(html);
 
-	html = '<section id="' + this.selector('page_account') + '" class="col-sm-10">';
+	html = '<section id="' + this.identifier('page') + '" class="col-sm-10">';
 	html += '<div class="col-sm-9">';
 	html += '<h3>Configuration</h3>';
 	html += '<p>';
 	html += 'Owner: ' + this.owner + '<br>';
 	html += 'Identifier: ' + this.id.toString() + '<br>';
-	html += 'Amount: <span id="' + this.selector('data_amount') + '">' + frozenether.amountToString(this.amount()) + '</span><br>';
-	html += 'Duration:<span id="' + this.selector('data_duration') + '">' + this.remainingTime() + '</span> seconds<br>';
+	html += 'Amount: <span id="' + this.identifier('data_amount') + '">' + frozenether.amountToString(this.amount()) + '</span><br>';
+	html += 'Duration:<span id="' + this.identifier('data_duration') + '">' + this.remainingTime() + '</span> seconds<br>';
 	html += '</p>';
 	html += '<h3>Actions</h3>';
 	html += '<form>';
 	html += '<p>';
-	html += '<label id="' + this.selector('action_amount') + '">Amount</label>: ';
-	html += '<input type="text" id="' + this.selector('action_amount') + '" placeholder="0"></input><br>';
-	html += '<label id="' + this.selector('action_duration') + '">Duration</label>: ';
-	html += '<input type="number" min="0" id="' + this.selector('action_duration') + '" placeholder="0"></input><br>';
-	html += '<input type="button" id="' + this.selector('deposit') + '" value="Deposit"></input>';
-	html += '<input type="button" id="' + this.selector('withdraw') + '" value="Withdraw"></input>';
-	html += '<input type="button" id="' + this.selector('freeze') + '" value="Freeze"></input>';
-	html += '<input type="button" id="' + this.selector('close') + '" value="Close"></input>';
+	html += '<label id="' + this.identifier('action_amount') + '">Amount</label>: ';
+	html += '<input type="text" id="' + this.identifier('action_amount') + '" placeholder="0"></input><br>';
+	html += '<label id="' + this.identifier('action_duration') + '">Duration</label>: ';
+	html += '<input type="number" min="0" id="' + this.identifier('action_duration') + '" placeholder="0"></input><br>';
+	html += '<input type="button" id="' + this.identifier('deposit') + '" value="Deposit"></input>';
+	html += '<input type="button" id="' + this.identifier('withdraw') + '" value="Withdraw"></input>';
+	html += '<input type="button" id="' + this.identifier('freeze') + '" value="Freeze"></input>';
+	html += '<input type="button" id="' + this.identifier('close') + '" value="Close"></input>';
 	html += '<br>';
 	html += '</p>';
 	html += '</form>';
 	html += '</div>';
 	html += '<aside class="col-sm-3">';
 	html += '<h2>History</h2>';
-	html += '<div id="' + this.selector('history') + '"></div>'
+	html += '<div id="' + this.identifier('history') + '"></div>'
 	html += '</aside>';
 	html += '</section>';
 	$('#pages').append(html);
-	$(this.selector('page_account')).hide();
+	$(this.selector('page')).hide();
 }
 
 frozenether.Account.prototype.destroy = function() {
@@ -108,7 +113,7 @@ frozenether.Account.prototype.destroy = function() {
 			frozenether.accounts.slice(i, i);
 		}
 	}
-	$(this.selector('account')).remove();
+	$(this.selector()).remove();
 
 	if (frozenether.accounts.length <= 0) {
 		$('#accounts_empty').show();
@@ -121,7 +126,7 @@ frozenether.Account.prototype.events = function() {
 
 	$(this.selector('modify')).on('click', function() {
 		$('#accounts_full').hide();
-		$(this.selector('page_account')).show();
+		$(this.selector('page')).show();
 	});
 
 	$(this.selector('deposit')).on('click', function() {
@@ -149,7 +154,7 @@ frozenether.Account.prototype.events = function() {
 	});
 
 	$(this.selector('close')).on('click', function() {
-		$(this.selector('page_account')).hide();
+		$(this.selector('page')).hide();
 		$('#accounts_full').show();
 	});
 }
@@ -166,6 +171,7 @@ frozenether.Account.prototype.update = function(msg) {
 	var amount = this.amount().toString();
 	var duration = this.remainingTime().toString();
 
+	$(this.selector('amount')).text(amount);
 	$(this.selector('data_amount')).text(amount);
 	$(this.selector('data_duration')).text(duration);
 	if (typeof msg !== 'undefined') {

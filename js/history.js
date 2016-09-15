@@ -46,30 +46,35 @@ frozenether.History.prototype.add = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}
-	var html = '<div id="' + this.selector(msg, 'event') + '">';
+	var html = '<div id="' + this.identifier(msg) + '">';
 	html += '<p>';
 	html += 'Event: ' + msg.event + '<br>';
 	html += '</p>';
 	html += '</div>';
-	//$('#' + this.id).append(html);
+	$('#' + this.id).append(html);
 }
 
 frozenether.History.prototype.remove = function(msg) {
 	if (typeof msg === 'undefined') {
 		return;
 	}
-	$(this.selector(msg, 'event')).remove();
+	$(this.selector(msg)).remove();
 }
 
-frozenether.History.prototype.selector = function(msg, string) {
-	var selector = '#' + this.id;
-	selector += '_' + msg.args.owner;
-	selector += '_' + msg.args.id.toString();
-	selector += '_' + msg.event;
-	selector += '_' + msg.blockNumber;
+frozenether.History.prototype.identifier = function(msg, suffix) {
+	var identifier = 'msg_' + this.id;
+	identifier += '_' + msg.args.owner;
+	identifier += '_' + msg.args.id.toString();
+	identifier += '_' + msg.event;
+	identifier += '_' + msg.blockNumber;
 	if (typeof suffix === 'string') {
-		selector += '_' + suffix;
+		identifier += '_' + suffix;
 	}
+	return identifier;
+}
+
+frozenether.History.prototype.selector = function(msg, suffix) {
+	var selector = '#' + this.identifier(msg, suffix);
 	return selector;
 }
 
