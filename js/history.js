@@ -3,7 +3,7 @@ frozenether.History = function(id, max) {
 	if (typeof max === 'integer') {
 		this.max = max;
 	} else {
-		this.max = parseInt($('#parameter_history_size').val(localStorage.getItem('history_size')));
+		this.max = parseInt(localStorage.getItem('history_size'));
 	}
 	this.msgs = [];
 }
