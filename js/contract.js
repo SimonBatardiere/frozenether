@@ -82,7 +82,7 @@ frozenether.Contract.prototype.remainingTime = function(account, id) {
 }
 
 frozenether.Contract.prototype.exist = function(account, id) {
-	if (remainingTime(account, id) == 0) {
+	if (this.remainingTime(account, id) == 0) {
 		return false;
 	}
 	return true;
@@ -113,7 +113,7 @@ frozenether.Contract.prototype.create = function(account, duration, amount, unit
 
 	do {
 		id = Math.floor(Math.random() * 65536);
-	} while (exist(account, id));
+	} while (this.exist(account, id));
 
 	if (isNaN(duration) || duration < 0) {
 		console.error('Duration is invalid');
@@ -164,6 +164,7 @@ frozenether.Contract.prototype.deposit = function(account, id, amount, unit) {
 frozenether.Contract.prototype.withdraw = function(account, id, amount, unit) {
 	var wei = 0;
 
+	console.log(id + ' ' + amount + ' ' + unit);
 	if (!frozenether.checkAccount(account)) {
 		console.error('Account ' + account + ' is invalid');
 		return false;

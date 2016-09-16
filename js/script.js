@@ -45,6 +45,7 @@ frozenether.Account = function(owner, id) {
 	this.createHtml();
 	this.events();
 
+	localStorage.setItem('first_page', 'page_accounts');
 	$('#accounts_empty').hide();
 	$('#accounts_full').show();
 }
@@ -52,7 +53,7 @@ frozenether.Account = function(owner, id) {
 frozenether.Account.prototype.identifier = function(suffix) {
 	var identifier = 'account_' + this.owner + '_' + this.id.toString();
 	if (typeof suffix === 'string') {
-		identfier += '_' + suffix;
+		identifier += '_' + suffix;
 	}
 	return identifier;
 }
@@ -64,8 +65,8 @@ frozenether.Account.prototype.selector = function(suffix) {
 
 frozenether.Account.prototype.createHtml = function() {
 	var html = '<p id="' + this.identifier() + '">';
-	html += 'Owner: ' + this.owner + ' ';
-	html += 'Amount: <span id="' + this.identifier('amount') + '">' + frozenether.amountToString(this.amount()) + '</span> ';
+	html += this.owner + ' - ';
+	html += '<span id="' + this.identifier('amount') + '">' + frozenether.amountToString(this.amount()) + '</span> ';
 	html += '<input type="button" id="' + this.identifier('modify') + '" value="Modify"></input>';
 	html += '</p>';
 	$('#accounts').after(html);
@@ -82,9 +83,9 @@ frozenether.Account.prototype.createHtml = function() {
 	html += '<h3>Actions</h3>';
 	html += '<form>';
 	html += '<p>';
-	html += '<label id="' + this.identifier('action_amount') + '">Amount</label>: ';
+	html += '<label for="' + this.identifier('action_amount') + '">Amount</label>: ';
 	html += '<input type="text" id="' + this.identifier('action_amount') + '" placeholder="0"></input><br>';
-	html += '<label id="' + this.identifier('action_duration') + '">Duration</label>: ';
+	html += '<label for="' + this.identifier('action_duration') + '">Duration</label>: ';
 	html += '<input type="number" min="0" id="' + this.identifier('action_duration') + '" placeholder="0"></input><br>';
 	html += '<input type="button" id="' + this.identifier('deposit') + '" value="Deposit"></input>';
 	html += '<input type="button" id="' + this.identifier('withdraw') + '" value="Withdraw"></input>';
@@ -109,13 +110,18 @@ frozenether.Account.prototype.destroy = function() {
 	len = frozenether.accounts.length;
 	for (i = 0; i < len; i++) {
 		if ((frozenether.accounts[i].owner == this.owner) &&
-				frozenether.accounts[i].id.eq(id)) {
+				frozenether.accounts[i].id.eq(this.id)) {
 			frozenether.accounts.slice(i, i);
 		}
 	}
 	$(this.selector()).remove();
+	if ($(this.selector('page')).is(":visible")) {
+		frozenether.changePage('#page_accounts');
+	}
+	$(this.selector('page')).remove();
 
 	if (frozenether.accounts.length <= 0) {
+		localStorage.setItem('first_page', 'page_presentation');
 		$('#accounts_empty').show();
 		$('#accounts_full').hide();
 	}
@@ -125,37 +131,36 @@ frozenether.Account.prototype.events = function() {
 	var account = this;
 
 	$(this.selector('modify')).on('click', function() {
-		$('#accounts_full').hide();
-		$(this.selector('page')).show();
+		frozenether.changePage(account.selector('page'));
 	});
 
 	$(this.selector('deposit')).on('click', function() {
-		var amount = parseFloat($(this.selector('action_amount')).val());
-		var errcode = deposit(account.account, account.id, amount, 'finney');
+		var amount = parseFloat($(account.selector('action_amount')).val());
+		var errcode = frozenether.contract.deposit(account.owner, account.id, amount, 'finney');
 		if (!errcode) {
-			console.err('Deposit on account failed');
+			console.error('Deposit on account failed');
 		}
 	});
 
 	$(this.selector('withdraw')).on('click', function() {
-		var amount = parseFloat($(this.selector('action_amount')).val());
-		var errcode = withdraw(this.account, account.id, amount, 'finney');
+		var amount = parseFloat($(account.selector('action_amount')).val());
+		var errcode = frozenether.contract.withdraw(account.owner, account.id, amount, 'finney');
 		if (!errcode) {
-			console.err('Withdraw from account failed');
+			console.error('Withdraw from account failed');
 		}
 	});
 
 	$(this.selector('freeze')).on('click', function() {
-		var duration = parseInt($(this.selector('action_duration')).val());
-		var errcode = freeze(account.account, account.id, duration);
+		var duration = parseInt($(account.selector('action_duration')).val());
+		var errcode = frozenether.contract.freeze(account.owner, account.id, duration);
 		if (!errcode) {
-			console.err('Freeze  account failed');
+			console.error('Freeze  account failed');
 		}
 	});
 
 	$(this.selector('close')).on('click', function() {
-		$(this.selector('page')).hide();
-		$('#accounts_full').show();
+		$(account.selector('page')).hide();
+		frozenether.changePage('#page_accounts');
 	});
 }
 
@@ -168,7 +173,7 @@ frozenether.Account.prototype.remainingTime = function() {
 }
 
 frozenether.Account.prototype.update = function(msg) {
-	var amount = this.amount().toString();
+	var amount = frozenether.amountToString(this.amount());
 	var duration = this.remainingTime().toString();
 
 	$(this.selector('amount')).text(amount);
@@ -177,7 +182,7 @@ frozenether.Account.prototype.update = function(msg) {
 	if (typeof msg !== 'undefined') {
 		this.history.push(msg);
 	}
-	if (amount <= 0) {
+	if (this.amount().lte(0)) {
 		this.destroy();
 	}
 	frozenether.updateTotalAmount();
@@ -191,7 +196,7 @@ frozenether.changePage = function(page) {
 		page = frozenether.previous_page;
 	}
 	if (typeof page === 'undefined') {
-		page = '#page_presentation';
+		page = '#' + localStorage.getItem('first_page');
 	}
 	$(page).show();
 	frozenether.previous_page = frozenether.current_page;
@@ -199,12 +204,35 @@ frozenether.changePage = function(page) {
 }
 
 frozenether.initNav = function() {
+	$('#page_presentation').hide();
 	$('#page_accounts').hide();
 	$('#page_help').hide();
 	$('#page_parameters').hide();
 	$('#accounts_full').hide();
 	frozenether.changePage();
 }
+
+$(function() {
+	var first_page = localStorage.getItem('first_page');
+	if (first_page === null) {
+		localStorage.setItem('first_page', 'page_presentation');
+	}
+
+	var language = localStorage.getItem('language');
+	if (language === null) {
+		localStorage.setItem('language', 'english');
+	}
+
+	var mode = localStorage.getItem('mode');
+	if (mode === null) {
+		localStorage.setItem('mode', 'basic');
+	}
+
+	var history_size = localStorage.getItem('history_size');
+	if (history_size === null) {
+		localStorage.setItem('history_size', 8);
+	}
+});
 
 $(function() {
 	frozenether.initNav();
@@ -255,22 +283,4 @@ $(function() {
 		frozenether.changePage('#page_help');
 	});
 });
-
-$(function() {
-	var language = localStorage.getItem('language');
-	if (typeof language === 'undefined') {
-		localStorage.setItem('language', 'english');
-	}
-
-	var mode = localStorage.getItem('mode');
-	if (typeof mode === 'undefined') {
-		localStorage.setItem('mode', 'basic');
-	}
-
-	var history_size = localStorage.getItem('history_size');
-	if (typeof history_size === 'undefined') {
-		localStorage.setItem('history_size', 8);
-	}
-});
-
 
