@@ -13,34 +13,39 @@
 	</head>
 
 	<body>
-		<header class="container">
-			<div class="row">
-				<img src="img/logo.png" alt="Frozen Ether logo" class="col-sm-2">
-				<h1 class="col-sm-3">Frozen Ether</h1>
-				<div class="col-sm-7">
-					<p>
-						<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
-						<span id="total_amount">0 ether</span>
-						<input type="button" id="parameters_button" value="Parameters"/>
-					</p>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation_bar" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">
+						<img src="img/logo.png" alt="Frozen Ether logo">
+					</a>
+				</div>
+				<div class="collapse navbar-collapse" id="navigation_bar">
+					<h1 class="navbar-text navbar-left">Frozen Ether</h1>
+					<ul class="nav navbar-nav navbar-left">
+						<li id="navigation_presentation" class="active"><a href="#">Presentation<span class="sr-only">(current)</span></a></li>
+						<li id="navigation_accounts"><a href="#">Accounts</a></li>
+						<li id="navigation_help"><a href="#">Help</a></li>
+					</ul>
+					<button type="button" data-toggle="modal" href="#popup_create_account" class="btn btn-default navbar-btn navbar-right">Create</button>
+					<span id="total_amount" class="navbar-text navbar-right">0 ether</span>
+					<button type="button" id="parameters_button" class="btn btn-default navbar-btn navbar-right">Parameters</button>
 				</div>
 			</div>
-		</header>
+		</nav>
 
 		<div class="container">
 			<div id="pages" class="row">
-				<nav class="col-sm-2">
-					<h2>Navigation</h2>
-					<ul id="navigation">
-						<li id="navigation_presentation">Presentation</li>
-						<li id="navigation_accounts">Accounts</li>
-						<li id="navigation_help">Help</li>
-					</ul>
-				</nav>
-				<section id="page_presentation" class="col-sm-10">
+				<section id="page_presentation" class="col-sm-12">
 					<h2>Presentation</h2>
 				</section>
-				<section id="page_accounts" class="col-sm-10">
+				<section id="page_accounts" class="col-sm-12">
 					<div class="col-sm-9" id="accounts_empty">
 						<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
 						<p>You should create a new account</p>
@@ -54,10 +59,30 @@
 						<div id="history"></div>
 					</aside>
 				</section>
-				<section id="page_help" class="col-sm-10">
+				<section id="page_help" class="col-sm-12">
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
 					<h2>Help</h2>
 				</section>
-				<section id="page_parameters" class="col-sm-10">
+				<section id="page_parameters" class="col-sm-12">
 					<h2>Parameters</h2>
 					<form>
 						<label for="parameter_language">Language</label>:
