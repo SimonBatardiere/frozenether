@@ -44,6 +44,8 @@
  * informations about accounts owned by other users. But remember that limitation is only implemented in the API of the
  * smart contract: everyone can read datas stored in the Ethereum blockchain and analyse the transactions.
  */
+pragma solidity ^0.4.0;
+
 contract FrozenEther {
 	/**
 	 * @dev Account object. FrozenEther contract will manipulate these objects to save the state for each accounts.
@@ -125,6 +127,18 @@ contract FrozenEther {
 	 */
 	function () {
 		throw;
+	}
+
+	/**
+	 * @notice Tell if the account already exists or not.
+	 * @param id Identifier of the account, which is unique for one user.
+	 * @return True if the account exists, else false.
+	 */
+	function isExist(uint id) public constant returns(bool) {
+		if (msg.value != 0) {
+			throw;
+		}
+		return isAccountExist(accounts[msg.sender][id]);
 	}
 
 	/**
