@@ -110,16 +110,9 @@ contract FrozenEther {
 	event Freeze(address owner, uint id, uint duration);
 
 	/**
-	 * @notice Contract constructor. If the sender sent some ether during the contract creation, store it in its
-	 *         account (id = 0). This account expired now, the Ether can be retreive whenever. But you shouldn't
-	 *         send Ether at the contract creation...
+	 * @notice Contract constructor.
 	 */
 	function FrozenEther() {
-		if (msg.value != 0) {
-			if (!create(0, 0)) {
-				throw;
-			}
-		}
 	}
 
 	/**
@@ -135,36 +128,25 @@ contract FrozenEther {
 	 * @return True if the account exists, else false.
 	 */
 	function isExist(uint id) public constant returns(bool) {
-		if (msg.value != 0) {
-			throw;
-		}
 		return isAccountExist(accounts[msg.sender][id]);
 	}
 
 	/**
 	 * @notice Get the remaining time before withdraw is allowed on the account (frozen state) owned by the sender
-	 *         and identify by the identifier. Do not send Ether with this function, or the call will throw an
-	 *         execption.
+	 *         and identify by the identifier.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return Remaining time in second, or 0 if withdraw is allowed. Return also 0 if the account doesn't exist.
 	 */
 	function remainingTime(uint id) public constant returns(uint) {
-		if (msg.value != 0) {
-			throw;
-		}
 		return remainingAccountTime(accounts[msg.sender][id]);
 	}
 
 	/**
-	 * @notice Get the amount of Wei stored on the account owned by the sender and identify by the identifier. Do
-	 *         not send Ether with this function, or the call will throw an execption.
+	 * @notice Get the amount of Wei stored on the account owned by the sender and identify by the identifier.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return Amount of Wei stored in the account, or 0 if the account doesn't exist.
 	 */
 	function amount(uint id) public constant returns(uint) {
-		if (msg.value != 0) {
-			throw;
-		}
 		return accounts[msg.sender][id].amount;
 	}
 
@@ -177,7 +159,7 @@ contract FrozenEther {
 	 *                 state.
 	 * @return True if success, else false.
 	 */
-	function create(uint id, uint duration) public returns(bool) {
+	function create(uint id, uint duration) public payable returns(bool) {
 		Account account = accounts[msg.sender][id];
 
 		if (!createAccount(account, duration, msg.value)) {
@@ -193,7 +175,7 @@ contract FrozenEther {
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @return True if success, else false.
 	 */
-	function deposit(uint id) public returns(bool) {
+	function deposit(uint id) public payable returns(bool) {
 		Account account = accounts[msg.sender][id];
 
 		if (msg.value == 0) {
@@ -208,8 +190,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @notice Withdraw some Ether from an existing account owned by the sender and identify by the identifier. Do
-	 *         not send Ether with this function, or the call will throw an execption.
+	 * @notice Withdraw some Ether from an existing account owned by the sender and identify by the identifier.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @param amount Amount of Wei to withdraw from the account. If this amount is greater than the balance of the
 	 *               account, this function withdraw all available Wei, not more.
@@ -219,9 +200,6 @@ contract FrozenEther {
 		Account account = accounts[msg.sender][id];
 		uint value = 0;
 
-		if (msg.value != 0) {
-			throw;
-		}
 		value = withdrawFromAccount(account, amount);
 		if (value == 0) {
 			return false;
@@ -240,8 +218,7 @@ contract FrozenEther {
 	}
 
 	/**
-	 * @notice Extend the duration of the frozen state, means that no withdraw will be allowed for longer. Do not
-	 *         send Ether with this function, or the call will throw an execption.
+	 * @notice Extend the duration of the frozen state, means that no withdraw will be allowed for longer.
 	 * @param id Identifier of the account, which is unique for one user.
 	 * @param duration Duration is seconds which will be added to the frozen state. No withdraw is allowed during
 	 *                 the frozen state. No negative value is allowed, you cannot reduce the frozen state duration!
@@ -252,9 +229,6 @@ contract FrozenEther {
 	function lenghtenFrozenState(uint id, uint duration) public returns(bool) {
 		Account account = accounts[msg.sender][id];
 
-		if (msg.value != 0) {
-			throw;
-		}
 		if (!lenghtenAccountFrozenState(account, duration)) {
 			return false;
 		}
