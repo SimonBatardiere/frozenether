@@ -31,7 +31,6 @@ function check(account, index, amount, duration, options)
 		}
 		return contract.amount(index, {from: account});
 	}).then(function(value) {
-		console.log(options);
 		if (options === undefined || options.amount === undefined || options.amount != 0) {
 			assert(value.eq(amount), prefix + "has invalid amount(" + value.toString() + "/" +
 					amount.toString() + ")");
@@ -80,6 +79,9 @@ function withdraw(account, index, amount, options) {
 		return contract.amount(index, {from: account});
 	}).then(function(value) {
 		total = value.minus(amount);
+		if (total.lt(0)) {
+			total = 0;
+		}
 		return contract.withdraw(index, amount, {from: account});
 	}).then(function(tx) {
 		if (options === undefined) {
@@ -124,7 +126,7 @@ contract('FrozenEther', function(accounts) {
 		}).then(function() {
 			return withdraw(accounts[0], 1, 10, {amount: 0});
 		}).then(function() {
-			return increase_time(1000);
+			return increase_time(1001);
 		}).then(function() {
 			return withdraw(accounts[0], 1, 10);
 		}).then(function() {
@@ -136,7 +138,7 @@ contract('FrozenEther', function(accounts) {
 		return FrozenEther.deployed().then(function(instance) {
 			return create(accounts[0], 1, 50, 1000);
 		}).then(function() {
-			return increase_time(1000);
+			return increase_time(1001);
 		}).then(function() {
 			return withdraw(accounts[0], 1, 60, {exist: 0});
 		});
