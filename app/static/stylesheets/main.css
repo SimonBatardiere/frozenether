@@ -1,0 +1,12 @@
+.navbar-brand {
+	padding-top: 0rem;
+	padding-bottom: 0rem;
+	margin-right: 0rem;
+}
+
+.navbar-brand > img {
+	max-height: 15%;
+	max-width: 15%;
+	margin-right: 1rem;
+}
+

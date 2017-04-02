@@ -15,6 +15,7 @@ function init() {
 }
 
 function initWeb3() {
+	var web3 = new Web3(Web3.givenProvider || new Web3.providers.WebsocketProvider('ws://localhost:8546'));
 	if (typeof web3 !== 'undefined' && typeof Web3 !== 'undefined') {
 		web3 = new Web3(web3.currentProvider);
 	} else if (typeof Web3 !== 'undefined') {
