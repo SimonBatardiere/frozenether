@@ -5,18 +5,22 @@
 		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
 		<title>Frozen Ether</title>
 		<link rel="icon" href="favicon.ico"/>
-		<link rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 		<link rel="stylesheet" href="stylesheets/main.css"/>
 	</head>
 
 	<body>
 		<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-			<button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbars_frozenether" aria-controls="navbars_frozenether" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button"
+					data-toggle="collapse" data-target="#navbars_frozenether"
+					aria-controls="navbars_frozenether" aria-expanded="false"
+					aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
 
 			<div class="collapse navbar-collapse" id="navbars_frozenether">
+				<h1 class="navbar-text fe-navbar-text-brand">Frozen Ether</h1>
 				<ul class="navbar-nav mr-auto">
 					<li class="nav-item active">
 						<a class="nav-link" href="#">Presentation<span class="sr-only">(current)</span></a>
@@ -28,13 +32,13 @@
 						<a class="nav-link" href="#">Settings</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#">Help</a>
+						<a class="nav-link" href="#">About</a>
 					</li>
 				</ul>
-				<div class="navbra-right">
-					<button type="button" class="btn btn-default navbar-btn"><img src="images/create.png" alt="Create new account"></button>
-					<p class="navbar-text">75.06 Ether</p>
-				</div>
+				<button type="button" class="btn btn-link fe-navbar-create">
+					<img src="img/create.png" alt="Create new account">
+				</button>
+				<p class="navbar-text">75.06 Ether</p>
 			</div>
 		</nav>
 
@@ -149,7 +153,7 @@
 		</div>
 
 		<script src="javascripts/jquery-3.2.0.min.js"></script>
-		<script src="javascripts/bootstrap.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="javascripts/script.js"></script>
 	</body>
 </html>
