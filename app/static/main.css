@@ -1,0 +1,42 @@
+body {
+	padding-top: 70px;
+}
+
+.navbar-brand {
+	padding: 0rem;
+	margin: 5px;
+	height: 40px;
+}
+
+.navbar-brand > img {
+	max-height: 100%;
+	max-width: 100%;
+	margin-left: 2rem;
+}
+
+.fe-navbar-create {
+	padding: 0rem;
+	margin: 5px;
+	height: 40px;
+}
+
+.fe-navbar-create > img {
+	max-height: 100%;
+	max-width: 100%;
+}
+
+.navbar-inverse .navbar-text {
+	color: #fff;
+}
+
+.fe-navbar-brand {
+	padding: 10px;
+	margin: 0px;
+	font-size: 20px;
+	padding-right: 4rem;
+}
+
+.fe-navbar-ether {
+	padding-right: 2rem;
+}
+

@@ -1,102 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
-		<title>Frozen Ether</title>
-		<link rel="icon" href="favicon.ico"/>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<link rel="stylesheet" href="stylesheets/main.css"/>
-	</head>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
+    <title>Frozen Ether</title>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/main.css"/>
+  </head>
 
-	<body>
-		<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-			<button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button" data-toggle="collapse" data-target="#navbars_frozenether" aria-controls="navbars_frozenether" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fe-navbar-collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+        </div>
 
-			<div class="collapse navbar-collapse" id="navbars_frozenether">
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-						<a class="nav-link" href="#">Presentation<span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Accounts</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Settings</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Help</a>
-					</li>
-				</ul>
-				<div class="navbra-right">
-					<button type="button" data-toggle="modal" href="#popup_create" class="btn btn-default navbar-btn">Create</button>
-					<p class="navbar-text">75.06 Ether</p>
-				</div>
-			</div>
-		</nav>
+        <div class="collapse navbar-collapse" id="fe-navbar-collapse">
+          <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
+          <ul class="nav navbar-nav">
+            <li><a href="#">Presentation</a></li>
+            <li><a href="#">Accounts</a></li>
+            <li><a href="#">Settings</a></li>
+            <li class="active"><a href="#">About<span class="sr-only"> (current)</span></a></li>
+          </ul>
+          <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
+          <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
+            <img src="images/create.png" alt="Create new account">
+            <span class="sr-only">Create</span>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-		<div class="modal fade" id="popup_create">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">x</button>
-						<h2 class="modal-title">Create a new account</h2>
-					</div>
-					<div class="modal-body">
-						<form class="form-horizontal">
-							<div class="form-group row">
-								<label for="create_owner" class="col-3 control-label">Owner</label>
-								<div class="col-9">
-									<select id="create_owner">
-										<option value="" disabled selected>Select your account's owner</option>
-										<option value="0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</option>
-										<option value="0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</option>
-										<option value="0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</option>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="create_amount" class="col-3 control-label">Amount</label>
-								<div class="input-group col-9">
-									<input type="text" class="form-control" id="create_amount" placeholder="0"/>
-									<select id="create_amount_unit" class="input-group-addon col-3">
-										<option value="ether">Ether</option>
-										<option value="finney">Finney</option>
-									</select>
-								</div>
-							</div>
-							<div class="form-group row">
-								<label for="create_duration" class="col-3 control-label">Duration</label>
-								<div class="input-group col-9">
-									<input type="number" class="form-control" id="create_duration" placeholder="1" min="0"/>
-									<select id="create_duration_unit" class="input-group-addon col-3">
-										<option value="second">Seconds</option>
-										<option value="minute">Minutes</option>
-										<option value="hour">Hours</option>
-										<option value="day" selected>Days</option>
-										<option value="week">Weeks</option>
-										<option value="month">Months</option>
-										<option value="year">Years</option>
-									</select>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="none" class="btn btn-danger">Create</button>
-					</div>
-				</div>
-			</div>
+    <div id="popup_create" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Create a new account</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="create_owner" class="col-sm-2 control-label">Owner</label>
+                <div class="col-sm-9">
+                  <button id="create_owner" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select your account's owner <span class="caret"></span></button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_amount" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="create_amount" placeholder="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Ether</a></li>
+                      <li><a href="#">Finney</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_duration" class="col-sm-2 control-label">Duration</label>
+                <div class="col-sm-9 input-group">
+                  <input type="number" class="form-control" id="create_duration" placeholder="1" min="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Seconds</a></li>
+                      <li><a href="#">Minutes</a></li>
+                      <li><a href="#">Hours</a></li>
+                      <li><a href="#">Days</a></li>
+                      <li><a href="#">Weeks</a></li>
+                      <li><a href="#">Months</a></li>
+                      <li><a href="#">Years</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		</div>
-
-		<script src="javascripts/jquery-3.2.0.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		<script src="javascripts/script.js"></script>
-	</body>
+    <script src="javascripts/jquery-3.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="javascripts/script.js"></script>
+  </body>
 </html>
 

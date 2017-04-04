@@ -1,72 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
-		<title>Frozen Ether</title>
-		<link rel="icon" href="favicon.ico"/>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-		<link rel="stylesheet" href="stylesheets/main.css"/>
-	</head>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
+    <title>Frozen Ether</title>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/main.css"/>
+  </head>
 
-	<body>
-		<nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
-			<button class="navbar-toggler navbar-toggler-right hidden-lg-up" type="button"
-					data-toggle="collapse" data-target="#navbars_frozenether"
-					aria-controls="navbars_frozenether" aria-expanded="false"
-					aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fe-navbar-collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+        </div>
 
-			<div class="collapse navbar-collapse" id="navbars_frozenether">
-				<h1 class="navbar-text fe-navbar-text-brand">Frozen Ether</h1>
-				<ul class="navbar-nav mr-auto">
-					<li class="nav-item">
-						<a class="nav-link" href="#">Presentation</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Accounts</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">Settings</a>
-					</li>
-					<li class="nav-item active">
-						<a class="nav-link" href="#">About<span class="sr-only">(current)</span></a>
-					</li>
-				</ul>
-				<button type="button" class="btn btn-link fe-navbar-create">
-					<img src="img/create.png" alt="Create new account">
-				</button>
-				<p class="navbar-text">75.06 Ether</p>
-			</div>
-		</nav>
+        <div class="collapse navbar-collapse" id="fe-navbar-collapse">
+          <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
+          <ul class="nav navbar-nav">
+            <li><a href="#">Presentation</a></li>
+            <li><a href="#">Accounts</a></li>
+            <li><a href="#">Settings</a></li>
+            <li class="active"><a href="#">About<span class="sr-only"> (current)</span></a></li>
+          </ul>
+          <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
+          <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
+            <img src="images/create.png" alt="Create new account">
+            <span class="sr-only">Create</span>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-		<div class="container-fluid">
-			<div class="row">
-				<main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
-					<h1>Who am I?</h1>
-					<p>My name is Simon Batardiere, and I'm a very curious guy who like to learn new things. I discovered Ethereum technology in May 2016, and was very excitting by it. There are so many new, fun and usefull things to develop and deploy on the network. I would like to participate to this small revolution, and just add my little brick on this system. I learnt solidity and web technology by myself to be able to acheive this project. The goal of this project is to learn a lot of new thing for me, and bring a little service to the community, even if this is not the most usefull service!</p>
-					<p>Else I am a french software and network engineer, even if I am most familiar with language C and embedded Linux Kernel than Web technologies.</p>
-					<h1>What is Ethereum?</h1>
-					<p>Ethereum is a  decentralized platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, censorship, fraud or third party interference.</p>
-					<p>These apps run on a custom built  blockchain, an enormously powerful shared global infrastructure that can move value around and represent the ownership of property. This enables developers to create markets, store registries of debts or promises, move funds in accordance with instructions given long in the past (like a will or a futures contract) and many other things that have not been invented yet, all without a middle man or counterparty risk.</p>
-					<p>Please find more information about Ethereum on the <a href="https://www.ethereum.org/">official website</a>.</p>
-					<h1>Contact</h1>
-					<p>For any question or issue, please send an e-mail to <a href="#">frozenether@gmail.com</a>
-					<h1>Get the code</h1>
-					<p>You can browse the code <a href="https://github.com/SimonBatardiere/frozenether">here</a>. Please read LICENCE file before to do anything.</p>
-					<h1>Legal mention</h1>
-					<p>The "Frozen Ether" service, which include all components associated to te service to freeze some Ether during a time laps, is provided as it is. The user must clearly understand that the Frozen Ether service and its authors cannot be responsible for anything when the user use it, include if the user loose Ether. Moreover the "Frozen Ether" service cannot have any responsability about the underlayer technologies, like Ethereum, Swarm or the peer-to-peer network, or any other technologies.</p>
-					<p>The "Frozen Ether" service is free, and this politic cannot be modified in the future.</p>
-					<p>The site and its usage conditions are under the french law, for any usage. If friendly negociation failed, or no negociation happens, the french courts within the jurisdiction of the Court of Appeal of Paris shall have sole jurisdiction to hear any dispute arising out of these provisions.</p>
-				</main>
-			</div>
-		</div>
+    <div class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <h1>Who am I?</h1>
+          <p>My name is Simon Batardiere, and I'm a very curious guy who like to learn new things. I discovered Ethereum technology in May 2016, and was very excitting by it. There are so many new, fun and usefull things to develop and deploy on the network. I would like to participate to this small revolution, and just add my little brick on this system. I learnt solidity and web technology by myself to be able to acheive this project. The goal of this project is to learn a lot of new thing for me, and bring a little service to the community, even if this is not the most usefull service!</p>
+          <p>Else I am a french software and network engineer, even if I am most familiar with language C and embedded Linux Kernel than Web technologies.</p>
+          <h1>What is Ethereum?</h1>
+          <p>Ethereum is a  decentralized platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, censorship, fraud or third party interference.</p>
+          <p>These apps run on a custom built  blockchain, an enormously powerful shared global infrastructure that can move value around and represent the ownership of property. This enables developers to create markets, store registries of debts or promises, move funds in accordance with instructions given long in the past (like a will or a futures contract) and many other things that have not been invented yet, all without a middle man or counterparty risk.</p>
+          <p>Please find more information about Ethereum on the <a href="https://www.ethereum.org/">official website</a>.</p>
+          <h1>Contact</h1>
+          <p>For any question or issue, please send an e-mail to <a href="#">frozenether@gmail.com</a>
+          <h1>Get the code</h1>
+          <p>You can browse the code <a href="https://github.com/SimonBatardiere/frozenether">here</a>. Please read LICENCE file before to do anything.</p>
+          <h1>Legal mention</h1>
+          <p>The "Frozen Ether" service, which include all components associated to te service to freeze some Ether during a time laps, is provided as it is. The user must clearly understand that the Frozen Ether service and its authors cannot be responsible for anything when the user use it, include if the user loose Ether. Moreover the "Frozen Ether" service cannot have any responsability about the underlayer technologies, like Ethereum, Swarm or the peer-to-peer network, or any other technologies.</p>
+          <p>The "Frozen Ether" service is free, and this politic cannot be modified in the future.</p>
+          <p>The site and its usage conditions are under the french law, for any usage. If friendly negociation failed, or no negociation happens, the french courts within the jurisdiction of the Court of Appeal of Paris shall have sole jurisdiction to hear any dispute arising out of these provisions.</p>
+        </main>
+      </div>
+    </div>
 
-		<script src="javascripts/jquery-3.2.0.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-		<script src="javascripts/script.js"></script>
-	</body>
+    <script src="javascripts/jquery-3.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="javascripts/script.js"></script>
+  </body>
 </html>
 
