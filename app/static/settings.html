@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
+    <title>Frozen Ether</title>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/main.css"/>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fe-navbar-collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="fe-navbar-collapse">
+          <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
+          <ul class="nav navbar-nav">
+            <li><a href="#">Presentation</a></li>
+            <li><a href="#">Accounts</a></li>
+            <li><a href="#">Settings</a></li>
+            <li class="active"><a href="#">About<span class="sr-only"> (current)</span></a></li>
+          </ul>
+          <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
+          <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
+            <img src="images/create.png" alt="Create new account">
+            <span class="sr-only">Create</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <main class="col-sm-10 offset-sm-1 col-md-10 offset-md-1 pt-3">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">History size</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" id="history_size" placeholder="32" min="8">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">Terms and Conditions</label>
+              <div class="col-sm-9">
+		<button type="button" data-toggle="modal" href="#popup_terms" class="btn btn-danger">Read</button>
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="popup_terms" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-check" aria-hidden="true"> Terms and Conditions ("Terms")</h4>
+          </div>
+          <div class="modal-body">
+	    <p><i>Last updated: 8 april 2017</i></p>
+	    <p>Please read these Terms and Conditions ("Terms", "Terms and Conditions") carefully before using the bzz://frozenether.eth resource and Frozen Ether distributed application (the "Service") operated by Simon Batardiere ("us", "we", or "our").</p>
+	    <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.</p>
+	    <p>By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.</p>
+	    <h4>Subscriptions</h4>
+	    <p>No subscription is needed to use the Service, you only need to have an Ethereum address. This is your responsability to keep both public and private keys of the address<p>
+	    <h4>Service</h4>
+	    <p>The service use an Ethereum smart contract to freeze Ether on the Ethereum blockchain. This smart contract is deployed at 0xhduzehfuiffrufhzru address. You are able to interact with it directly (without use the Frozen Ether distributed application), but all interactions are under your responsability</p>
+	    <h4>Changes</h4>
+	    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+	    <h4>Contact Us</h4>
+	    <p>If you have any questions about these Terms, please contact us.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">I understabd and accept</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <script src="javascripts/jquery-3.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="javascripts/script.js"></script>
+  </body>
+</html>
+

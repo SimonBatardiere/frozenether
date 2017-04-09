@@ -19,16 +19,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+          <a id="nav_logo" class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
         </div>
 
         <div class="collapse navbar-collapse" id="fe-navbar-collapse">
           <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
           <ul class="nav navbar-nav">
-            <li><a href="#">Presentation</a></li>
-            <li><a href="#">Accounts</a></li>
-            <li><a href="#">Settings</a></li>
-            <li class="active"><a href="#">About<span class="sr-only"> (current)</span></a></li>
+            <li id="nav_presentation"><a href="#">Presentation<span class="sr-only"></span></a></li>
+            <li id="nav_accounts"><a href="#">Accounts<span class="sr-only"></span></a></li>
+            <li id="nav_settings"><a href="#">Settings<span class="sr-only"></span></a></li>
+            <li id="nav_about"><a href="#">About<span class="sr-only"></span></a></li>
           </ul>
           <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
           <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
@@ -39,7 +39,20 @@
       </div>
     </nav>
 
-    <div class="container-fluid">
+    <div id="section_presentation" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+        </main>
+      </div>
+    </div>
+
+
+    <div id="section_accounts" class="container-fluid">
       <div class="row">
         <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
           <section class="row text-center placeholders">
@@ -146,6 +159,139 @@
             </table>
           </div>
         </main>
+      </div>
+    </div>
+
+    <div id="section_settings" class="container">
+      <div class="row">
+        <main class="col-sm-10 offset-sm-1 col-md-10 offset-md-1 pt-3">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">History size</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" id="history_size" placeholder="32" min="8">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">Terms and Conditions</label>
+              <div class="col-sm-9">
+		<button type="button" data-toggle="modal" href="#popup_terms" class="btn btn-danger">Read</button>
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="section_about" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <h1>Who am I?</h1>
+          <p>My name is Simon Batardiere, and I'm a very curious guy who like to learn new things. I discovered Ethereum technology in May 2016, and was very excitting by it. There are so many new, fun and usefull things to develop and deploy on the network. I would like to participate to this small revolution, and just add my little brick on this system. I learnt solidity and web technology by myself to be able to acheive this project. The goal of this project is to learn a lot of new thing for me, and bring a little service to the community, even if this is not the most usefull service!</p>
+          <p>Else I am a french software and network engineer, even if I am most familiar with language C and embedded Linux Kernel than Web technologies.</p>
+          <h1>What is Ethereum?</h1>
+          <p>Ethereum is a  decentralized platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, censorship, fraud or third party interference.</p>
+          <p>These apps run on a custom built  blockchain, an enormously powerful shared global infrastructure that can move value around and represent the ownership of property. This enables developers to create markets, store registries of debts or promises, move funds in accordance with instructions given long in the past (like a will or a futures contract) and many other things that have not been invented yet, all without a middle man or counterparty risk.</p>
+          <p>Please find more information about Ethereum on the <a href="https://www.ethereum.org/">official website</a>.</p>
+          <h1>Contact</h1>
+          <p>For any question or issue, please send an e-mail to <a href="#">frozenether@gmail.com</a>
+          <h1>Get the code</h1>
+          <p>You can browse the code <a href="https://github.com/SimonBatardiere/frozenether">here</a>. Please read LICENCE file before to do anything.</p>
+          <h1>Legal mention</h1>
+          <p>The "Frozen Ether" service, which include all components associated to te service to freeze some Ether during a time laps, is provided as it is. The user must clearly understand that the Frozen Ether service and its authors cannot be responsible for anything when the user use it, include if the user loose Ether. Moreover the "Frozen Ether" service cannot have any responsability about the underlayer technologies, like Ethereum, Swarm or the peer-to-peer network, or any other technologies.</p>
+          <p>The "Frozen Ether" service is free, and this politic cannot be modified in the future.</p>
+          <p>The site and its usage conditions are under the french law, for any usage. If friendly negociation failed, or no negociation happens, the french courts within the jurisdiction of the Court of Appeal of Paris shall have sole jurisdiction to hear any dispute arising out of these provisions.</p>
+        </main>
+      </div>
+    </div>
+
+    <div id="popup_create" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Create a new account</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="create_owner" class="col-sm-2 control-label">Owner</label>
+                <div class="col-sm-9">
+                  <button id="create_owner" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select your account's owner <span class="caret"></span></button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_amount" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="create_amount" placeholder="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Ether</a></li>
+                      <li><a href="#">Finney</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_duration" class="col-sm-2 control-label">Duration</label>
+                <div class="col-sm-9 input-group">
+                  <input type="number" class="form-control" id="create_duration" placeholder="1" min="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Seconds</a></li>
+                      <li><a href="#">Minutes</a></li>
+                      <li><a href="#">Hours</a></li>
+                      <li><a href="#">Days</a></li>
+                      <li><a href="#">Weeks</a></li>
+                      <li><a href="#">Months</a></li>
+                      <li><a href="#">Years</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup_terms" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-check" aria-hidden="true"> Terms and Conditions ("Terms")</h4>
+          </div>
+          <div class="modal-body">
+	    <p><i>Last updated: 8 april 2017</i></p>
+	    <p>Please read these Terms and Conditions ("Terms", "Terms and Conditions") carefully before using the bzz://frozenether.eth resource and Frozen Ether distributed application (the "Service") operated by Simon Batardiere ("us", "we", or "our").</p>
+	    <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.</p>
+	    <p>By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.</p>
+	    <h4>Subscriptions</h4>
+	    <p>No subscription is needed to use the Service, you only need to have an Ethereum address. This is your responsability to keep both public and private keys of the address<p>
+	    <h4>Service</h4>
+	    <p>The service use an Ethereum smart contract to freeze Ether on the Ethereum blockchain. This smart contract is deployed at 0xhduzehfuiffrufhzru address. You are able to interact with it directly (without use the Frozen Ether distributed application), but all interactions are under your responsability</p>
+	    <h4>Changes</h4>
+	    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+	    <h4>Contact Us</h4>
+	    <p>If you have any questions about these Terms, please contact us.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">I understabd and accept</button>
+          </div>
+        </div>
       </div>
     </div>
 
