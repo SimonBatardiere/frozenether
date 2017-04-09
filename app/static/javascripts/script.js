@@ -4,6 +4,70 @@ var frozenether = {
 	contract: {}
 };
 
+frozenether.amountToString = function(amount) {
+	var string = '';
+	var units = ['Wei', 'Kwei', 'Mwei', 'Gwei', 'Szabo', 'Finney', 'Ether', 'Kether', 'Mether', 'Gether', 'Tether'];
+	var i = 0;
+	var len = units.length;
+
+	do {
+		if (amount.lessThan(1000)) {
+			string = amount.round(3).toString() + ' ' + units[i];
+			return string;
+		}
+		i++;
+	} while (amount = amount.div(1000));
+	return 'Unknwon';
+}
+
+frozenether.Account = function(owner, id) {
+	this.owner = owner;
+	this.id = new BigNumber(id);
+	this.html();
+	localStorage.setItem('first_name', 'accounts');
+}
+
+frozenether.Account.prototype.identifier = function(suffix) {
+	var identifier;
+
+	identifier = 'account_' + this.owner + '_' + this.id.toString();
+	if (typeof suffix === 'string') {
+		identifier += '_' + suffix;
+	}
+	return identifier;
+}
+
+frozenether.Account.prototype.selector = function(suffix) {
+	var selector;
+
+	selector = '#' + this.identifier(suffix);
+	return selector;
+}
+
+frozenether.Account.prototype.htmlAccounts = function() {
+	var html = '';
+
+	html += '<div class="col-6 col-sm-3 placeholder">'
+	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Frozen Ether account representation">'
+	html += '<h4>Account</h4>'
+	html += '<div class="text-muted">' + this.amountToString() + '</div>'
+	html += '<div class="text-muted">' + this.durationToString() + '</div>'
+	html += '</div>'
+	$('#accounts').after(html);
+
+	$('blbla').on('click', function() {
+		frozenether.naviguate('presentation');
+	});
+}
+
+frozenether.Account.prototype.htmlSection = function() {
+}
+
+frozenether.Account.prototype.html = function() {
+	this.htmlAccounts();
+	this.htmlSection();
+}
+
 frozenether.naviguate = function(name) {
 	var nav;
 	var section;
@@ -62,6 +126,11 @@ frozenether.initStorage = function() {
 	var history_size = localStorage.getItem('history_size');
 	if (history_size === null) {
 		localStorage.setItem('history_size', 8);
+	}
+
+	var terms_accepted = localStorage.getItem('terms_accepted');
+	if (terms_accepted === null) {
+		localStorage.setItem('terms_accepted', false);
 	}
 }
 
