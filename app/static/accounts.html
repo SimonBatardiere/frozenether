@@ -19,16 +19,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+          <a id="nav_logo" class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
         </div>
 
         <div class="collapse navbar-collapse" id="fe-navbar-collapse">
           <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
           <ul class="nav navbar-nav">
-            <li><a id="nav_presentation" href="#">Presentation</a></li>
-            <li><a id="nav_accounts" href="#">Accounts</a></li>
-            <li><a id="nav_settings" href="#">Settings</a></li>
-            <li class="active"><a id="nav_about" href="#">About<span class="sr-only"> (current)</span></a></li>
+            <li id="nav_presentation"><a href="#">Presentation<span class="sr-only"></span></a></li>
+            <li id="nav_accounts"><a href="#">Accounts<span class="sr-only"></span></a></li>
+            <li id="nav_settings"><a href="#">Settings<span class="sr-only"></span></a></li>
+            <li id="nav_about"><a href="#">About<span class="sr-only"></span></a></li>
           </ul>
           <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
           <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
@@ -43,23 +43,26 @@
       <div class="row">
         <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
           <section class="row text-center placeholders">
-            <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
-              <h4>Create a new account</h4>
+            <div class="col-6 col-sm-3">
+              <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link fe-accounts-create"  title="Create">
+                <img src="images/create.png" width="200" height="200" class="img-fluid img-circle" alt="Create new account">
+                <span class="sr-only">Create</span>
+                <h4>Create a new account</h4>
+              </button>
             </div>
-            <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
               <h4>Account</h4>
               <div class="text-muted">13 Ether</div>
               <div class="text-muted">3 days</div>
             </div>
-            <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
               <h4>Account</h4>
               <div class="text-muted">58 Ether</div>
             </div>
-            <div class="col-6 col-sm-3 placeholder">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail">
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
               <h4>Account</h4>
               <div class="text-muted">2 Ether</div>
               <div class="text-muted">67 days</div>
