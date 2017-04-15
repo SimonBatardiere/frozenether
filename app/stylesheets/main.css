@@ -1,28 +1,48 @@
 body {
-	padding-top: 80px;
-}
-
-div {
-	border: solid;
-	border-width: 1px;
-	border-radius: 10px;
+	padding-top: 70px;
 }
 
 .navbar-brand {
-	padding: 0px;
+	padding: 0rem;
 	margin: 5px;
+	height: 40px;
 }
 
 .navbar-brand > img {
-	display: inline;
-	margin: auto;
-	height: auto;
 	max-height: 100%;
-	width: auto;
+	max-width: 100%;
+	margin-left: 2rem;
+}
+
+.fe-navbar-create {
+	padding: 0rem;
+	margin: 5px;
+	height: 40px;
+}
+
+.fe-navbar-create > img {
+	max-height: 100%;
 	max-width: 100%;
 }
 
-.navbar {
-	background-color: #88c4ff;
+.navbar-inverse .navbar-text {
+	color: #fff;
+}
+
+.fe-navbar-brand {
+	padding: 10px;
+	margin: 0px;
+	font-size: 20px;
+	padding-right: 4rem;
+}
+
+.fe-navbar-ether {
+	padding-right: 2rem;
+}
+
+.fe-account-controls {
+	padding-top: 3rem;
+	padding-bottom: 3rem;
+	padding-left: 4rem;
 }
 

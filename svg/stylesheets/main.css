@@ -1,0 +1,28 @@
+body {
+	padding-top: 80px;
+}
+
+div {
+	border: solid;
+	border-width: 1px;
+	border-radius: 10px;
+}
+
+.navbar-brand {
+	padding: 0px;
+	margin: 5px;
+}
+
+.navbar-brand > img {
+	display: inline;
+	margin: auto;
+	height: auto;
+	max-height: 100%;
+	width: auto;
+	max-width: 100%;
+}
+
+.navbar {
+	background-color: #88c4ff;
+}
+

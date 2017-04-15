@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
+		<title>Frozen Ether</title>
+		<link rel="icon" href="favicon.ico"/>
+		<link rel="stylesheet" href="css/normalize.css"/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+				integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+				crossorigin="anonymous"/>
+		<link rel="stylesheet" href="css/main.css"/>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-default navbar-fixed-top">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation_bar" aria-expanded="false">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand" href="#">
+						<img src="img/logo.png" alt="Frozen Ether logo">
+					</a>
+				</div>
+				<div class="collapse navbar-collapse" id="navigation_bar">
+					<h1 class="navbar-text navbar-left">Frozen Ether</h1>
+					<ul class="nav navbar-nav navbar-left">
+						<li id="navigation_presentation" class="active"><a href="#">Presentation<span class="sr-only">(current)</span></a></li>
+						<li id="navigation_accounts"><a href="#">Accounts</a></li>
+						<li id="navigation_help"><a href="#">Help</a></li>
+					</ul>
+					<button type="button" data-toggle="modal" href="#popup_create_account" class="btn btn-default navbar-btn navbar-right">Create</button>
+					<span id="total_amount" class="navbar-text navbar-right">0 ether</span>
+					<button type="button" id="parameters_button" class="btn btn-default navbar-btn navbar-right">Parameters</button>
+				</div>
+			</div>
+		</nav>
+
+		<div class="container">
+			<div id="pages" class="row">
+				<section id="page_presentation" class="col-sm-12">
+					<h2>Presentation</h2>
+				</section>
+				<section id="page_accounts" class="col-sm-12">
+					<div class="col-sm-9" id="accounts_empty">
+						<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
+						<p>You should create a new account</p>
+					</div>
+					<div class="col-sm-9" id="accounts_full">
+						<h2>Accounts</h2>
+						<div id="accounts"></div>
+					</div>
+					<aside class="col-sm-3">
+						<h2>History</h2>
+						<div id="history"></div>
+					</aside>
+				</section>
+				<section id="page_help" class="col-sm-12">
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+					<h2>Help</h2>
+				</section>
+				<section id="page_parameters" class="col-sm-12">
+					<h2>Parameters</h2>
+					<form>
+						<label for="parameter_language">Language</label>:
+						<input type="radio" name="parameter_language" value="english">English</input>
+						<input type="radio" name="parameter_language" value="french">Français</input><br>
+						<label for="parameter_mode">Mode</label>:
+						<input type="radio" name="parameter_mode" value="basic">Basic</input>
+						<input type="radio" name="parameter_mode" value="advanced">Advanced</input><br>
+						<label for="create_duration">History size</label>: <input type="number" id="parameter_history_size" min="0"/><br>
+						<input type="button" id="apply_parameters" value="Apply"/>
+					</form>
+					<input type="button" id="close_parameters" value="Close"/>
+				</section>
+			</div>
+		</div>
+
+		<div class="modal" id="popup_create_account">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">x</button>
+						<h2 class="modal-title">Add new account</h2>
+					</div>
+					<div class="modal-body">
+						<p>
+							<label for="create_owner">Owner</label>: <select id="create_owner">
+								<option value="" disabled selected>Select your account's owner</option>
+							</select><br>
+							<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finney<br>
+							<label for="create_duration">Duration</label>: <input type="number" id="create_duration" min="0"/> seconds<br>
+							<input type="button" id="create_button" value="Create"/>
+						</p>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+		<script src="http://code.jquery.com/jquery-3.1.0.min.js"
+				integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
+				crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+				crossorigin="anonymous"></script>
+		<script src="js/frozenether.js"></script>
+		<script src="js/script.js"></script>
+		<script src="js/contract.js"></script>
+		<script src="js/history.js"></script>
+	</body>
+</html>
+

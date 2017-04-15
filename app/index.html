@@ -1,137 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8"/>
-		<meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
-		<title>Frozen Ether</title>
-		<link rel="icon" href="favicon.ico"/>
-		<link rel="stylesheet" href="css/normalize.css"/>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-				integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-				crossorigin="anonymous"/>
-		<link rel="stylesheet" href="css/main.css"/>
-	</head>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="description" content="Freeze your Ethers in the Ethereum blockchain for a given time."/>
+    <title>Frozen Ether</title>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="stylesheets/main.css"/>
+  </head>
 
-	<body>
-		<nav class="navbar navbar-default navbar-fixed-top">
-			<div class="container-fluid">
-				<div class="navbar-header">
-					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigation_bar" aria-expanded="false">
-						<span class="sr-only">Toggle navigation</span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-					<a class="navbar-brand" href="#">
-						<img src="img/logo.png" alt="Frozen Ether logo">
-					</a>
-				</div>
-				<div class="collapse navbar-collapse" id="navigation_bar">
-					<h1 class="navbar-text navbar-left">Frozen Ether</h1>
-					<ul class="nav navbar-nav navbar-left">
-						<li id="navigation_presentation" class="active"><a href="#">Presentation<span class="sr-only">(current)</span></a></li>
-						<li id="navigation_accounts"><a href="#">Accounts</a></li>
-						<li id="navigation_help"><a href="#">Help</a></li>
-					</ul>
-					<button type="button" data-toggle="modal" href="#popup_create_account" class="btn btn-default navbar-btn navbar-right">Create</button>
-					<span id="total_amount" class="navbar-text navbar-right">0 ether</span>
-					<button type="button" id="parameters_button" class="btn btn-default navbar-btn navbar-right">Parameters</button>
-				</div>
-			</div>
-		</nav>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#fe-navbar-collapse" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a id="nav_logo" class="navbar-brand" href="#"><img src="images/logo.png" alt="Frozen Ether logo"></a>
+        </div>
 
-		<div class="container">
-			<div id="pages" class="row">
-				<section id="page_presentation" class="col-sm-12">
-					<h2>Presentation</h2>
-				</section>
-				<section id="page_accounts" class="col-sm-12">
-					<div class="col-sm-9" id="accounts_empty">
-						<button data-toggle="modal" href="#popup_create_account" class="btn btn-primary">Create</button>
-						<p>You should create a new account</p>
-					</div>
-					<div class="col-sm-9" id="accounts_full">
-						<h2>Accounts</h2>
-						<div id="accounts"></div>
-					</div>
-					<aside class="col-sm-3">
-						<h2>History</h2>
-						<div id="history"></div>
-					</aside>
-				</section>
-				<section id="page_help" class="col-sm-12">
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-					<h2>Help</h2>
-				</section>
-				<section id="page_parameters" class="col-sm-12">
-					<h2>Parameters</h2>
-					<form>
-						<label for="parameter_language">Language</label>:
-						<input type="radio" name="parameter_language" value="english">English</input>
-						<input type="radio" name="parameter_language" value="french">Français</input><br>
-						<label for="parameter_mode">Mode</label>:
-						<input type="radio" name="parameter_mode" value="basic">Basic</input>
-						<input type="radio" name="parameter_mode" value="advanced">Advanced</input><br>
-						<label for="create_duration">History size</label>: <input type="number" id="parameter_history_size" min="0"/><br>
-						<input type="button" id="apply_parameters" value="Apply"/>
-					</form>
-					<input type="button" id="close_parameters" value="Close"/>
-				</section>
-			</div>
-		</div>
+        <div class="collapse navbar-collapse" id="fe-navbar-collapse">
+          <p class="navbar-text fe-navbar-brand">Frozen Ether</p>
+          <ul class="nav navbar-nav">
+            <li id="nav_presentation"><a href="#">Presentation<span class="sr-only"></span></a></li>
+            <li id="nav_accounts"><a href="#">Accounts<span class="sr-only"></span></a></li>
+            <li id="nav_settings"><a href="#">Settings<span class="sr-only"></span></a></li>
+            <li id="nav_about"><a href="#">About<span class="sr-only"></span></a></li>
+          </ul>
+          <p class="navbar-text navbar-right fe-navbar-ether" title="Amount frozen on Ethereum">75.06 Ether</p>
+          <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link navbar-btn navbar-right fe-navbar-create"  title="Create">
+            <img src="images/create.png" alt="Create new account">
+            <span class="sr-only">Create</span>
+          </button>
+        </div>
+      </div>
+    </nav>
 
-		<div class="modal" id="popup_create_account">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">x</button>
-						<h2 class="modal-title">Add new account</h2>
-					</div>
-					<div class="modal-body">
-						<p>
-							<label for="create_owner">Owner</label>: <select id="create_owner">
-								<option value="" disabled selected>Select your account's owner</option>
-							</select><br>
-							<label for="create_amount">Amount</label>: <input type="text" id="create_amount" placeholder="0"/> finney<br>
-							<label for="create_duration">Duration</label>: <input type="number" id="create_duration" min="0"/> seconds<br>
-							<input type="button" id="create_button" value="Create"/>
-						</p>
-					</div>
+    <div id="section_presentation" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+          <h1>Presentation</h1>
+        </main>
+      </div>
+    </div>
 
-				</div>
-			</div>
+    <div id="section_accounts" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <section class="row text-center placeholders">
+            <div class="col-6 col-sm-3">
+              <button type="button" data-toggle="modal" href="#popup_create" class="btn btn-link fe-accounts-create"  title="Create">
+                <img src="images/create.png" width="200" height="200" class="img-fluid img-circle" alt="Create new account">
+                <span class="sr-only">Create</span>
+                <h4>Create a new account</h4>
+              </button>
+            </div>
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
+              <h4>Account</h4>
+              <div class="text-muted">13 Ether</div>
+              <div class="text-muted">3 days</div>
+            </div>
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
+              <h4>Account</h4>
+              <div class="text-muted">58 Ether</div>
+            </div>
+            <div class="col-6 col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
+              <h4>Account</h4>
+              <div class="text-muted">2 Ether</div>
+              <div class="text-muted">67 days</div>
+            </div>
+          </section>
 
-		</div>
+          <h1>History</h1>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Account</th>
+                  <th>Identifier</th>
+                  <th>Action</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>9 Mar 2017, 10:31</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Create</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>9 Mar 2017, 16:34</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Deposit</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Withdraw</td>
+                  <td>13</td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
 
-		<script src="http://code.jquery.com/jquery-3.1.0.min.js"
-				integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="
-				crossorigin="anonymous"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-				integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-				crossorigin="anonymous"></script>
-		<script src="js/frozenether.js"></script>
-		<script src="js/script.js"></script>
-		<script src="js/contract.js"></script>
-		<script src="js/history.js"></script>
-	</body>
+    <div id="section_settings" class="container">
+      <div class="row">
+        <main class="col-sm-10 offset-sm-1 col-md-10 offset-md-1 pt-3">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">History size</label>
+              <div class="col-sm-9">
+                <input type="number" class="form-control" id="history_size" placeholder="32" min="8">
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="history_size" class="col-sm-3 control-label">Terms and Conditions</label>
+              <div class="col-sm-9">
+		<button type="button" data-toggle="modal" href="#popup_terms" class="btn btn-danger">Read</button>
+              </div>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+
+    <div id="section_about" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <h1>Who am I?</h1>
+          <p>My name is Simon Batardiere, and I'm a very curious guy who like to learn new things. I discovered Ethereum technology in May 2016, and was very excitting by it. There are so many new, fun and usefull things to develop and deploy on the network. I would like to participate to this small revolution, and just add my little brick on this system. I learnt solidity and web technology by myself to be able to acheive this project. The goal of this project is to learn a lot of new thing for me, and bring a little service to the community, even if this is not the most usefull service!</p>
+          <p>Else I am a french software and network engineer, even if I am most familiar with language C and embedded Linux Kernel than Web technologies.</p>
+          <h1>What is Ethereum?</h1>
+          <p>Ethereum is a  decentralized platform that runs smart contracts: applications that run exactly as programmed without any possibility of downtime, censorship, fraud or third party interference.</p>
+          <p>These apps run on a custom built  blockchain, an enormously powerful shared global infrastructure that can move value around and represent the ownership of property. This enables developers to create markets, store registries of debts or promises, move funds in accordance with instructions given long in the past (like a will or a futures contract) and many other things that have not been invented yet, all without a middle man or counterparty risk.</p>
+          <p>Please find more information about Ethereum on the <a href="https://www.ethereum.org/">official website</a>.</p>
+          <h1>Contact</h1>
+          <p>For any question or issue, please send an e-mail to <a href="#">frozenether@gmail.com</a>
+          <h1>Get the code</h1>
+          <p>You can browse the code <a href="https://github.com/SimonBatardiere/frozenether">here</a>. Please read LICENCE file before to do anything.</p>
+          <h1>Legal mention</h1>
+          <p>The "Frozen Ether" service, which include all components associated to te service to freeze some Ether during a time laps, is provided as it is. The user must clearly understand that the Frozen Ether service and its authors cannot be responsible for anything when the user use it, include if the user loose Ether. Moreover the "Frozen Ether" service cannot have any responsability about the underlayer technologies, like Ethereum, Swarm or the peer-to-peer network, or any other technologies.</p>
+          <p>The "Frozen Ether" service is free, and this politic cannot be modified in the future.</p>
+          <p>The site and its usage conditions are under the french law, for any usage. If friendly negociation failed, or no negociation happens, the french courts within the jurisdiction of the Court of Appeal of Paris shall have sole jurisdiction to hear any dispute arising out of these provisions.</p>
+        </main>
+      </div>
+    </div>
+
+    <div id="section_account_0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13_31" class="container-fluid">
+      <div class="row">
+        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
+          <section class="row text-left">
+            <div class="col-sm-3">
+              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
+              <div class="btn-group fe-account-controls" role="group" aria-label="Account's actions">
+                <button type="button" data-toggle="modal" href="#popup_deposit" class="btn btn-default" title="Deposit">
+                  <span class="glyphicon glyphicon-log-in" aria-hidden="true">
+                  <span class="sr-only">Deposit</span>
+                </button>
+                <button type="button" data-toggle="modal" href="#popup_withdraw" class="btn btn-default" title="Withdraw">
+                  <span class="glyphicon glyphicon-log-out" aria-hidden="true">
+                  <span class="sr-only">Withdraw</span>
+                </button>
+                <button type="button" data-toggle="modal" href="#popup_lengthen" class="btn btn-default" title="Lengthen duration">
+                  <span class="glyphicon glyphicon-time" aria-hidden="true">
+                  <span class="sr-only">Lengthen duration</span>
+                </button>
+              </div>
+            </div>
+            <div class="col-sm-9 table-responsive">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <th>Address</th>
+                    <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  </tr>
+                  <tr>
+                    <th>Identifier</th>
+                    <td>31</td>
+                  </tr>
+                  <tr>
+                    <th>Amount</th>
+                    <td>75.98 Ether</td>
+                  </tr>
+                  <tr>
+                    <th>Remaining time</th>
+                    <td>3 days</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <h1>History</h1>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Account</th>
+                  <th>Identifier</th>
+                  <th>Action</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>9 Mar 2017, 10:31</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Create</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>9 Mar 2017, 16:34</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Deposit</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Withdraw</td>
+                  <td>13</td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>22 Mar 2017, 8:44</td>
+                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
+                  <td>31</td>
+                  <td>Destroy</td>
+                  <td></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <div id="popup_create" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-plus" aria-hidden="true"> Create a new account</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="create_owner" class="col-sm-2 control-label">Owner</label>
+                <div class="col-sm-9">
+                  <button id="create_owner" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select your account's owner <span class="caret"></span></button>
+                  <ul class="dropdown-menu dropdown-menu-right">
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_amount" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="create_amount" placeholder="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Ether</a></li>
+                      <li><a href="#">Finney</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="create_duration" class="col-sm-2 control-label">Duration</label>
+                <div class="col-sm-9 input-group">
+                  <input type="number" class="form-control" id="create_duration" placeholder="1" min="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Seconds</a></li>
+                      <li><a href="#">Minutes</a></li>
+                      <li><a href="#">Hours</a></li>
+                      <li><a href="#">Days</a></li>
+                      <li><a href="#">Weeks</a></li>
+                      <li><a href="#">Months</a></li>
+                      <li><a href="#">Years</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup_deposit" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-log-in" aria-hidden="true"> Deposit Ether on the account</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="deposit_amount" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="deposit_amount" placeholder="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Ether</a></li>
+                      <li><a href="#">Finney</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Deposit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup_withdraw" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-log-out" aria-hidden="true"> Withdraw Ether from the account</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="withdraw_amount" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="withdraw_amount" placeholder="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Ether</a></li>
+                      <li><a href="#">Finney</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="withdraw_all" class="col-sm-2 control-label">All</label>
+                <div class="col-sm-9 input-group">
+                  <input type="checkbox" class="form-control" id="withdraw_all">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Withdraw</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup_lengthen" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-time" aria-hidden="true"> Lengthen the account's frozen state</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label for="lengthen_duration" class="col-sm-2 control-label">Duration</label>
+                <div class="col-sm-9 input-group">
+                  <input type="number" class="form-control" id="lengthen_duration" placeholder="1" min="0">
+                  <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Seconds</a></li>
+                      <li><a href="#">Minutes</a></li>
+                      <li><a href="#">Hours</a></li>
+                      <li><a href="#">Days</a></li>
+                      <li><a href="#">Weeks</a></li>
+                      <li><a href="#">Months</a></li>
+                      <li><a href="#">Years</a></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">Lengthen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="popup_terms" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog container-fluid">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">x</button>
+            <h4 class="modal-title"><span class="glyphicon glyphicon-check" aria-hidden="true"> Terms and Conditions ("Terms")</h4>
+          </div>
+          <div class="modal-body">
+	    <p><i>Last updated: 8 april 2017</i></p>
+	    <p>Please read these Terms and Conditions ("Terms", "Terms and Conditions") carefully before using the bzz://frozenether.eth resource and Frozen Ether distributed application (the "Service") operated by Simon Batardiere ("us", "we", or "our").</p>
+	    <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service.</p>
+	    <p>By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service.</p>
+	    <h4>Subscriptions</h4>
+	    <p>No subscription is needed to use the Service, you only need to have an Ethereum address. This is your responsability to keep both public and private keys of the address<p>
+	    <h4>Service</h4>
+	    <p>The service use an Ethereum smart contract to freeze Ether on the Ethereum blockchain. This smart contract is deployed at 0xhduzehfuiffrufhzru address. You are able to interact with it directly (without use the Frozen Ether distributed application), but all interactions are under your responsability</p>
+	    <h4>Changes</h4>
+	    <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion.</p>
+	    <h4>Contact Us</h4>
+	    <p>If you have any questions about these Terms, please contact us.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="none" class="btn btn-danger">I understand and accept</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="javascripts/jquery-3.2.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="javascripts/frozenether.js"></script>
+  </body>
 </html>
 

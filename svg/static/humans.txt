@@ -1,0 +1,13 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+	Simon Batardiere
+
+# TECHNOLOGY COLOPHON
+
+	CSS3, HTML5, Javascript, jQuery, Bootstrap
+    Solidity, Ethereum
+
+	Source: https://github.com/SimonBatardiere/frozenether
