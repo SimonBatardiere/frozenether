@@ -81,7 +81,7 @@ frozenether.Account.prototype.update = function() {
 		self.amount = undefined;
 		self.duration = undefined;
 		console.error(e);
-	}
+	});
 }
 
 frozenether.Account.prototype.updateHtml = function() {
@@ -97,12 +97,12 @@ frozenether.Account.prototype.updateHtml = function() {
 frozenether.Account.prototype.htmlSummary = function() {
 	var html = '';
 
-	html += '<div id="' + self.selector('summary') + '" class="col-6 col-sm-3 placeholder">'
-	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Frozen Ether account representation">'
-	html += '<h4>Account</h4>'
-	html += '<div id="' + self.selector('summary_amount') + '" class="text-muted"></div>'
-	html += '<div id="' + self.selector('summary_duration') + '" class="text-muted"></div>'
-	html += '</div>'
+	html += '<div id="' + self.selector('summary') + '" class="col-6 col-sm-3 placeholder">';
+	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Frozen Ether account representation">';
+	html += '<h4>Account</h4>';
+	html += '<div id="' + self.selector('summary_amount') + '" class="text-muted"></div>';
+	html += '<div id="' + self.selector('summary_duration') + '" class="text-muted"></div>';
+	html += '</div>';
 	$('#accounts').after(html);
 
 	$('#section_' + this.identifier()).on('click', function() {
@@ -113,50 +113,50 @@ frozenether.Account.prototype.htmlSummary = function() {
 frozenether.Account.prototype.htmlSection = function() {
 	var html = '';
 
-	html += '<div id="section' + this.identifier() + '" class="container-fluid">'
-	html += '<div class="row">'
-	html += '<main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">'
-	html += '<section class="row text-left">'
-	html += '<div class="col-sm-3">'
-	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">'
-	html += '<div class="btn-group fe-account-controls" role="group" aria-label="Account\'s actions">'
-	html += '<button type="button" data-toggle="modal" href="#popup_deposit" class="btn btn-default" title="Deposit">'
-	html += '<span class="glyphicon glyphicon-log-in" aria-hidden="true">'
-	html += '<span class="sr-only">Deposit</span>'
-	html += '</button>'
-	html += '<button type="button" data-toggle="modal" href="#popup_withdraw" class="btn btn-default" title="Withdraw">'
-	html += '<span class="glyphicon glyphicon-log-out" aria-hidden="true">
-	html += '<span class="sr-only">Withdraw</span>'
-	html += '</button>'
-	html += '<button type="button" data-toggle="modal" href="#popup_lengthen" class="btn btn-default" title="Lengthen duration">'
-	html += '<span class="glyphicon glyphicon-time" aria-hidden="true">'
-	html += '<span class="sr-only">Lengthen duration</span>'
-	html += '</button>'
-	html += '</div>'
-	html += '</div>'
-	html += '<div class="col-sm-9 table-responsive">'
-	html += '<table class="table">'
-	html += '<tbody>'
-	html += '<tr><th>Address</th><td>' + this.owner + '</td></tr>'
-	html += '<tr><th>Identifier</th><td>' + this.id.toString() + '</td></tr>'
-	html += '<tr><th>Amount</th><td id="' + this.identifier('section_amount') + '"></td></tr>'
-	html += '<tr><th>Remaining time</th><td id="' + this.identifier('section_duration' + '"></td></tr>'
-	html += '</tbody>'
-	html += '</table>'
-	html += '</div>'
-	html += '</section>'
-	html += '<h1>History</h1>'
-	html += '<div class="table-responsive">'
-	html += '<table class="table table-striped">'
-	html += '<thead><tr><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Amount</th></tr></thead>'
-	html += '<tbody>'
-	html += '<tr><td>9 Mar 2017, 10:31</td><td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td><td>31</td><td>Create</td><td>10</td></tr>
-        html += '</tbody>'
-	html += '</table>'
-	html += '</div>'
-	html += '</main>'
-	html += '</div>'
-	html += '</div>'
+	html += '<div id="section' + this.identifier() + '" class="container-fluid">';
+	html += '<div class="row">';
+	html += '<main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">';
+	html += '<section class="row text-left">';
+	html += '<div class="col-sm-3">';
+	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">';
+	html += '<div class="btn-group fe-account-controls" role="group" aria-label="Account\'s actions">';
+	html += '<button type="button" data-toggle="modal" href="#popup_deposit" class="btn btn-default" title="Deposit">';
+	html += '<span class="glyphicon glyphicon-log-in" aria-hidden="true">';
+	html += '<span class="sr-only">Deposit</span>';
+	html += '</button>';
+	html += '<button type="button" data-toggle="modal" href="#popup_withdraw" class="btn btn-default" title="Withdraw">';
+	html += '<span class="glyphicon glyphicon-log-out" aria-hidden="true">';
+	html += '<span class="sr-only">Withdraw</span>';
+	html += '</button>';
+	html += '<button type="button" data-toggle="modal" href="#popup_lengthen" class="btn btn-default" title="Lengthen duration">';
+	html += '<span class="glyphicon glyphicon-time" aria-hidden="true">';
+	html += '<span class="sr-only">Lengthen duration</span>';
+	html += '</button>';
+	html += '</div>';
+	html += '</div>';
+	html += '<div class="col-sm-9 table-responsive">';
+	html += '<table class="table">';
+	html += '<tbody>';
+	html += '<tr><th>Address</th><td>' + this.owner + '</td></tr>';
+	html += '<tr><th>Identifier</th><td>' + this.id.toString() + '</td></tr>';
+	html += '<tr><th>Amount</th><td id="' + this.identifier('section_amount') + '"></td></tr>';
+	html += '<tr><th>Remaining time</th><td id="' + this.identifier('section_duration') + '"></td></tr>';
+	html += '</tbody>';
+	html += '</table>';
+	html += '</div>';
+	html += '</section>';
+	html += '<h1>History</h1>';
+	html += '<div class="table-responsive">';
+	html += '<table class="table table-striped">';
+	html += '<thead><tr><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Amount</th></tr></thead>';
+	html += '<tbody>';
+	html += '<tr><td>9 Mar 2017, 10:31</td><td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td><td>31</td><td>Create</td><td>10</td></tr>';
+        html += '</tbody>';
+	html += '</table>';
+	html += '</div>';
+	html += '</main>';
+	html += '</div>';
+	html += '</div>';
 }
 
 frozenether.Account.prototype.html = function() {
@@ -216,8 +216,8 @@ frozenether.initContract = function() {
 			}
 			frozenether.accounts = accounts;
 			resolve();
-		}
-	}
+		});
+	});
 }
 
 frozenether.initNav = function() {
@@ -268,10 +268,10 @@ frozenether.initFailed = function(message) {
 $(function() {
 	frozenether.initContract().then(function() {
 		frozenether.initStorage();
-	}.then(function() {
+	}).then(function() {
 		frozenether.initNav();
-	}.catch(function(message) {
+	}).catch(function(message) {
 		frozenether.initFailed(message);
-	}
+	});
 });
 
