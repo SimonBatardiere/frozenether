@@ -1,6 +1,6 @@
 import { default as Web3 } from 'web3';
 import { default as contract } from 'truffle-contract'
-import frozenether_artifacts from '../../../build/contracts/FrozenEther.json'
+import frozenether_artifacts from '../../build/contracts/FrozenEther.json'
 
 var frozenether = {
 	contract: {},
