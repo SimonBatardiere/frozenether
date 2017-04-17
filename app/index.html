@@ -206,134 +206,6 @@
       </div>
     </div>
 
-    <div id="section_account_0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13_31" class="container-fluid">
-      <div class="row">
-        <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
-          <section class="row text-left">
-            <div class="col-sm-3">
-              <img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Account representation">
-              <div class="btn-group fe-account-controls" role="group" aria-label="Account's actions">
-                <button type="button" data-toggle="modal" href="#popup_deposit" class="btn btn-default" title="Deposit">
-                  <span class="glyphicon glyphicon-log-in" aria-hidden="true">
-                  <span class="sr-only">Deposit</span>
-                </button>
-                <button type="button" data-toggle="modal" href="#popup_withdraw" class="btn btn-default" title="Withdraw">
-                  <span class="glyphicon glyphicon-log-out" aria-hidden="true">
-                  <span class="sr-only">Withdraw</span>
-                </button>
-                <button type="button" data-toggle="modal" href="#popup_lengthen" class="btn btn-default" title="Lengthen duration">
-                  <span class="glyphicon glyphicon-time" aria-hidden="true">
-                  <span class="sr-only">Lengthen duration</span>
-                </button>
-              </div>
-            </div>
-            <div class="col-sm-9 table-responsive">
-              <table class="table">
-                <tbody>
-                  <tr>
-                    <th>Address</th>
-                    <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  </tr>
-                  <tr>
-                    <th>Identifier</th>
-                    <td>31</td>
-                  </tr>
-                  <tr>
-                    <th>Amount</th>
-                    <td>75.98 Ether</td>
-                  </tr>
-                  <tr>
-                    <th>Remaining time</th>
-                    <td>3 days</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
-
-          <h1>History</h1>
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Account</th>
-                  <th>Identifier</th>
-                  <th>Action</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>9 Mar 2017, 10:31</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Create</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>9 Mar 2017, 16:34</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Deposit</td>
-                  <td>3</td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Withdraw</td>
-                  <td>13</td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-                <tr>
-                  <td>22 Mar 2017, 8:44</td>
-                  <td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td>
-                  <td>31</td>
-                  <td>Destroy</td>
-                  <td></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </main>
-      </div>
-    </div>
-
     <div id="popup_create" class="modal fade" tabindex="-1" role="dialog">
       <div class="modal-dialog container-fluid">
         <div class="modal-content">
@@ -345,22 +217,18 @@
             <form class="form-horizontal">
               <div class="form-group">
                 <label for="create_owner" class="col-sm-2 control-label">Owner</label>
-                <div class="col-sm-9">
+                <div class="col-sm-9 dropdown">
                   <button id="create_owner" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Select your account's owner <span class="caret"></span></button>
-                  <ul class="dropdown-menu dropdown-menu-right">
-                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
-                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
-                    <li><a href="#">0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</a></li>
-                  </ul>
+                  <ul id="popup_create_accounts_list" class="dropdown-menu dropdown-menu-right" aria-labelledby="create_owner"></ul>
                 </div>
               </div>
               <div class="form-group">
                 <label for="create_amount" class="col-sm-2 control-label">Amount</label>
                 <div class="col-sm-9 input-group">
                   <input type="text" class="form-control" id="create_amount" placeholder="0">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                  <div class="input-group-btn dropdown">
+                    <button id="create_amount_unit" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="create_amount_unit">
                       <li><a href="#">Ether</a></li>
                       <li><a href="#">Finney</a></li>
                     </ul>
@@ -371,9 +239,9 @@
                 <label for="create_duration" class="col-sm-2 control-label">Duration</label>
                 <div class="col-sm-9 input-group">
                   <input type="number" class="form-control" id="create_duration" placeholder="1" min="0">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                  <div class="input-group-btn dropdown">
+                    <button id="create_duration_unit" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="create_duration_unit">
                       <li><a href="#">Seconds</a></li>
                       <li><a href="#">Minutes</a></li>
                       <li><a href="#">Hours</a></li>

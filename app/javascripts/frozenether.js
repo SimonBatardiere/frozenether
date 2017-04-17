@@ -166,6 +166,12 @@ frozenether.Account.prototype.html = function() {
 	this.updateHtml();
 }
 
+frozenether.onNewEthAccount = function(account) {
+	var html = '<li><a href="#">' + account + '</a></li>';
+
+	$('#popup_create_accounts_list').append(html);
+}
+
 frozenether.naviguate = function(name) {
 	var nav;
 	var section;
@@ -184,10 +190,10 @@ frozenether.naviguate = function(name) {
 
 	nav = '#nav_' + name;
 	section = '#section_' + name;
-	if ($(nav).length) {
+	if (!$(nav).length) {
 		nav = '#nav_accounts';
 	}
-	if ($(section).length) {
+	if (!$(section).length) {
 		section = '#section_accounts';
 	}
 
@@ -216,6 +222,7 @@ frozenether.initContract = function() {
 				reject("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
 			}
 			frozenether.accounts = accounts;
+			frozenether.accounts.forEach(frozenether.onNewEthAccount);
 			resolve();
 		});
 	});
@@ -245,6 +252,13 @@ frozenether.initNav = function() {
 	});
 }
 
+frozenether.initDropdown = function() {
+	$('.dropdown-menu').on('click', 'a', function() {
+		var text = $(this).html() + ' <span class="caret"></span>';
+		$(this).closest('.dropdown').find('.dropdown-toggle').html(text);
+	});
+}
+
 frozenether.initStorage = function() {
 	var first_name = localStorage.getItem('first_name');
 	if (first_name === null) {
@@ -271,6 +285,8 @@ $(function() {
 		frozenether.initStorage();
 	}).then(function() {
 		frozenether.initNav();
+	}).then(function() {
+		frozenether.initDropdown();
 	}).catch(function(message) {
 		frozenether.initFailed(message);
 	});
