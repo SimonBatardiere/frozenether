@@ -38,13 +38,58 @@ frozenether.durationToString = function(duration) {
 	return '';
 }
 
-frozenether.Account = function(owner, id) {
+frozenether.durationToInt = function(value, unit) {
+	var duration = web3.toBigNumber(value);
+	if (typeof unit === 'undefined') {
+		console.error('Duration unit is undefined: use \'Days\'');
+		unit = 'Days';
+	}
+
+	switch(unit) {
+	case 'Seconds':
+		break;
+	case 'Minutes':
+		duration = duration.times('60');
+		break;
+	case 'Hours':
+		duration = duration.times('3600');
+		break;
+	case 'Days':
+		duration = duration.times('86400');
+		break;
+	case 'Weeks':
+		duration = duration.times('604800');
+		break;
+	case 'Months':
+		duration = duration.times('2629800');
+		break;
+	case 'Years':
+		duration = duration.times('31557600');
+		break;
+	default:
+		console.error('Unknown duration unit(' + unit + '): use \'Days\'');
+		duration = duration.times('86400');
+		break;
+	}
+	return duration;
+}
+
+frozenether.Account = function(owner, amount, duration) {
 	this.owner = owner;
-	this.id = new BigNumber(id);
+	this.id = 0;
 	this.amount = undefined;
 	this.duration = undefined;
 	this.html();
 	localStorage.setItem('first_name', 'accounts');
+}
+
+frozenether.Account.prototype.isEqual = function(owner, id) {
+	if (this.owner != owner) {
+		return false;
+	} else if (!this.id.eq(id)) {
+		return false;
+	}
+	return true;
 }
 
 frozenether.Account.prototype.identifier = function(suffix) {
@@ -87,7 +132,8 @@ frozenether.Account.prototype.update = function() {
 
 frozenether.Account.prototype.updateHtml = function() {
 	var self = this;
-	return update().then(function() {
+
+	return this.update().then(function() {
 		$(self.selector('summary_amount')).text(frozenether.amountToString(self.amount));
 		$(self.selector('summary_duration')).text(frozenether.durationToString(self.duration));
 		$(self.selector('section_amount')).text(frozenether.amountToString(self.amount));
@@ -98,15 +144,15 @@ frozenether.Account.prototype.updateHtml = function() {
 frozenether.Account.prototype.htmlSummary = function() {
 	var html = '';
 
-	html += '<div id="' + self.selector('summary') + '" class="col-6 col-sm-3 placeholder">';
-	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid rounded-circle" alt="Frozen Ether account representation">';
+	html += '<div id="' + this.identifier('summary') + '" class="col-6 col-sm-3">';
+	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Frozen Ether account representation">';
 	html += '<h4>Account</h4>';
-	html += '<div id="' + self.selector('summary_amount') + '" class="text-muted"></div>';
-	html += '<div id="' + self.selector('summary_duration') + '" class="text-muted"></div>';
+	html += '<div id="' + this.identifier('summary_amount') + '" class="text-muted"></div>';
+	html += '<div id="' + this.identifier('summary_duration') + '" class="text-muted"></div>';
 	html += '</div>';
-	$('#accounts').after(html);
+	$('#accounts_summary').append(html);
 
-	$('#section_' + this.identifier()).on('click', function() {
+	$(this.selector('summary')).on('click', function() {
 		frozenether.naviguate(this.identifier);
 	});
 }
@@ -164,6 +210,43 @@ frozenether.Account.prototype.html = function() {
 	this.htmlSummary();
 	this.htmlSection();
 	this.updateHtml();
+}
+
+frozenether.getAccount = function(owner, id) {
+	var found;
+
+	frozenether.accounts.forEach(function(account) {
+		if (account.isEqual(owner, id)) {
+			found = account;
+		}
+	});
+	return found;
+}
+
+frozenether.create = function() {
+	var owner = $('#create_owner').val();
+	var amount;
+	var amount_value = parseFloat($('#create_amount_value').val());
+	var amount_unit = $('#create_amount_unit').text().trim();
+	var duration;
+	var duration_value = parseInt($('#create_duration_value').val());
+	var duration_unit = $('#create_duration_unit').text().trim();
+	var account;
+
+	amount = web3.toWei(amount_value, amount_unit);
+	duration = frozenether.durationToInt(duration_value, duration_unit);
+
+	account = new frozenether.Account(owner, amount, duration);
+	frozenether.accounts.push(account);
+}
+
+frozenether.deposit = function() {
+}
+
+frozenether.withdraw = function() {
+}
+
+frozenether.lengthen = function() {
 }
 
 frozenether.onNewEthAccount = function(account) {
@@ -228,6 +311,23 @@ frozenether.initContract = function() {
 	});
 }
 
+frozenether.initStorage = function() {
+	var first_name = localStorage.getItem('first_name');
+	if (first_name === null) {
+		localStorage.setItem('first_name', 'presentation');
+	}
+
+	var history_size = localStorage.getItem('history_size');
+	if (history_size === null) {
+		localStorage.setItem('history_size', 8);
+	}
+
+	var terms_accepted = localStorage.getItem('terms_accepted');
+	if (terms_accepted === null) {
+		localStorage.setItem('terms_accepted', false);
+	}
+}
+
 frozenether.initNav = function() {
 	$('#section_presentation').hide();
 	$('#section_accounts').hide();
@@ -259,21 +359,19 @@ frozenether.initDropdown = function() {
 	});
 }
 
-frozenether.initStorage = function() {
-	var first_name = localStorage.getItem('first_name');
-	if (first_name === null) {
-		localStorage.setItem('first_name', 'presentation');
-	}
-
-	var history_size = localStorage.getItem('history_size');
-	if (history_size === null) {
-		localStorage.setItem('history_size', 8);
-	}
-
-	var terms_accepted = localStorage.getItem('terms_accepted');
-	if (terms_accepted === null) {
-		localStorage.setItem('terms_accepted', false);
-	}
+frozenether.initButton = function() {
+	$('#create_button').on('click', function() {
+		frozenether.create();
+	});
+	$('#deposit_button').on('click', function() {
+		frozenether.deposit();
+	});
+	$('#withdraw_button').on('click', function() {
+		frozenether.withdraw();
+	});
+	$('#lengthen_button').on('click', function() {
+		frozenether.lengthen();
+	});
 }
 
 frozenether.initFailed = function(message) {
@@ -287,6 +385,8 @@ $(function() {
 		frozenether.initNav();
 	}).then(function() {
 		frozenether.initDropdown();
+	}).then(function() {
+		frozenether.initButton();
 	}).catch(function(message) {
 		frozenether.initFailed(message);
 	});
