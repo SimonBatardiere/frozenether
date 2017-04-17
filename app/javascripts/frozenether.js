@@ -75,12 +75,32 @@ frozenether.durationToInt = function(value, unit) {
 }
 
 frozenether.Account = function(owner, amount, duration) {
+	var self = this;
+	var frozen;
+
 	this.owner = owner;
-	this.id = 0;
+	this.id = undefined;
 	this.amount = undefined;
 	this.duration = undefined;
-	this.html();
-	localStorage.setItem('first_name', 'accounts');
+
+	frozenether.contract.deployed().then(function(instance) {
+		frozen = instance;
+		return Math.floor(Math.random() * 65536);
+	}).then(function(id) {
+		self.id = web3.toBigNumber(id);
+		return frozen.isExist.call(self.id, { from: self.owner });
+	}).then(function(exist) {
+		if (exist) {
+			this.reject();
+			return;
+		}
+		return frozen.create(self.id, duration, { from: self.owner, value: amount });
+	}).then(function() {
+		self.html();
+		localStorage.setItem('first_name', 'accounts');
+	}).catch(function() {
+		console.log('Create new Frozen Ether account failed');
+	});
 }
 
 frozenether.Account.prototype.isEqual = function(owner, id) {
