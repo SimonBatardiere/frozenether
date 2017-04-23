@@ -9,7 +9,8 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin([
-      { from: './app/index.html', to: "index.html" }
+      { from: './app/index.html', to: "index.html" },
+      { from: './app/images', to: "images" }
     ])
   ],
   module: {
@@ -29,6 +30,13 @@ module.exports = {
           presets: ['es2015'],
           plugins: ['transform-runtime']
         }
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loaders: [
+          'file?hash=sha512&digest=hex&name=[hash].[ext]',
+          'image-webpack?bypassOnDebug&optimizationLevel=7&interlaced=false'
+        ]
       }
     ]
   }
