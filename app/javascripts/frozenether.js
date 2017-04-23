@@ -91,6 +91,7 @@ frozenether.Account = function(owner, amount, duration) {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (exist) {
+			console.error('The account already exists');
 			this.reject();
 			return;
 		}
@@ -98,8 +99,9 @@ frozenether.Account = function(owner, amount, duration) {
 	}).then(function() {
 		self.html();
 		localStorage.setItem('first_name', 'accounts');
+		$('#popup_create').modal('toggle');
 	}).catch(function() {
-		console.log('Create new Frozen Ether account failed');
+		console.error('Create new Frozen Ether account failed');
 	});
 }
 
@@ -162,6 +164,7 @@ frozenether.Account.prototype.updateHtml = function() {
 }
 
 frozenether.Account.prototype.htmlSummary = function() {
+	var self = this;
 	var html = '';
 
 	html += '<div id="' + this.identifier('summary') + '" class="col-6 col-sm-3">';
@@ -173,14 +176,14 @@ frozenether.Account.prototype.htmlSummary = function() {
 	$('#accounts_summary').append(html);
 
 	$(this.selector('summary')).on('click', function() {
-		frozenether.naviguate(this.identifier);
+		frozenether.naviguate(self.identifier());
 	});
 }
 
 frozenether.Account.prototype.htmlSection = function() {
 	var html = '';
 
-	html += '<div id="section' + this.identifier() + '" class="container-fluid">';
+	html += '<div id="section_' + this.identifier() + '" class="container-fluid">';
 	html += '<div class="row">';
 	html += '<main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">';
 	html += '<section class="row text-left">';
@@ -224,6 +227,9 @@ frozenether.Account.prototype.htmlSection = function() {
 	html += '</main>';
 	html += '</div>';
 	html += '</div>';
+
+	$('body').append(html);
+	$('#section_' + this.identifier()).hide();
 }
 
 frozenether.Account.prototype.html = function() {
@@ -244,7 +250,7 @@ frozenether.getAccount = function(owner, id) {
 }
 
 frozenether.create = function() {
-	var owner = $('#create_owner').val();
+	var owner = $('#create_owner').text().trim();
 	var amount;
 	var amount_value = parseFloat($('#create_amount_value').val());
 	var amount_unit = $('#create_amount_unit').text().trim();
@@ -279,6 +285,7 @@ frozenether.naviguate = function(name) {
 	var nav;
 	var section;
 
+	console.log(name);
 	if (typeof frozenether.active.nav !== 'undefined') {
 		$(frozenether.active.nav).removeClass('active');
 		$(frozenether.active.nav + ' > a > span').text('');
@@ -300,6 +307,8 @@ frozenether.naviguate = function(name) {
 		section = '#section_accounts';
 	}
 
+	console.log(nav);
+	console.log(section);
 	$(nav).addClass('active');
 	$(nav + ' > a > span').text(' (current)');
 	$(section).show();
