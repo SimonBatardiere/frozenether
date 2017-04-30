@@ -202,12 +202,19 @@
           <div class="modal-body">
             <form class="form-horizontal">
               <div class="form-group">
-                <label for="deposit_amount" class="col-sm-2 control-label">Amount</label>
+                <label class="col-sm-2 control-label">Account</label>
                 <div class="col-sm-9 input-group">
-                  <input type="text" class="form-control" id="deposit_amount" placeholder="0">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                  <span id="deposit_owner" class="input-group-addon"></span>
+                  <span id="deposit_id" class="input-group-addon"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="deposit_amount_value" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="deposit_amount_value" placeholder="0">
+                  <div class="input-group-btn dropdown">
+                    <button id="deposit_amount_unit" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="deposit_amount_unit">
                       <li><a href="#">Wei</a></li>
                       <li><a href="#">Kwei</a></li>
                       <li><a href="#">Mwei</a></li>
@@ -243,12 +250,19 @@
           <div class="modal-body">
             <form class="form-horizontal">
               <div class="form-group">
-                <label for="withdraw_amount" class="col-sm-2 control-label">Amount</label>
+                <label class="col-sm-2 control-label">Account</label>
                 <div class="col-sm-9 input-group">
-                  <input type="text" class="form-control" id="withdraw_amount" placeholder="0">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                  <span id="withdraw_owner" class="input-group-addon"></span>
+                  <span id="withdraw_id" class="input-group-addon"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="withdraw_amount_value" class="col-sm-2 control-label">Amount</label>
+                <div class="col-sm-9 input-group">
+                  <input type="text" class="form-control" id="withdraw_amount_value" placeholder="0">
+                  <div class="input-group-btn dropdown">
+                    <button id="withdraw_amount_unit" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Ether <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="withdraw_amount_unit">
                       <li><a href="#">Wei</a></li>
                       <li><a href="#">Kwei</a></li>
                       <li><a href="#">Mwei</a></li>
@@ -266,7 +280,7 @@
               </div>
               <div class="form-group">
                 <label for="withdraw_all" class="col-sm-2 control-label">All</label>
-                <div class="col-sm-9 input-group">
+                <div class="col-sm-1 input-group">
                   <input type="checkbox" class="form-control" id="withdraw_all">
                 </div>
               </div>
@@ -290,12 +304,19 @@
           <div class="modal-body">
             <form class="form-horizontal">
               <div class="form-group">
-                <label for="lengthen_duration" class="col-sm-2 control-label">Duration</label>
+                <label class="col-sm-2 control-label">Account</label>
                 <div class="col-sm-9 input-group">
-                  <input type="number" class="form-control" id="lengthen_duration" placeholder="1" min="0">
-                  <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
+                  <span id="lengthen_owner" class="input-group-addon"></span>
+                  <span id="lengthen_id" class="input-group-addon"></span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="lengthen_duration_value" class="col-sm-2 control-label">Duration</label>
+                <div class="col-sm-9 input-group">
+                  <input type="number" class="form-control" id="lengthen_duration_value" placeholder="1" min="0">
+                  <div class="input-group-btn dropdown">
+                    <button id="lengthen_duration_unit" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Days <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="lengthen_duration_unit">
                       <li><a href="#">Seconds</a></li>
                       <li><a href="#">Minutes</a></li>
                       <li><a href="#">Hours</a></li>
