@@ -179,7 +179,7 @@ frozenether.Account.prototype.htmlSummary = function() {
 	var self = this;
 	var html = '';
 
-	html += '<div id="' + this.identifier('summary') + '" class="col-6 col-sm-3">';
+	html += '<div id="' + this.identifier('summary') + '" class="col-6 col-sm-3 fe-hand">';
 	html += '<img src="data:image/gif;base64,R0lGODlhAQABAIABAADcgwAAACwAAAAAAQABAAACAkQBADs=" width="200" height="200" class="img-fluid img-circle" alt="Frozen Ether account representation">';
 	html += '<h4>Account</h4>';
 	html += '<div id="' + this.identifier('summary_amount') + '" class="text-muted"></div>';
