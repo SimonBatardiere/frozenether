@@ -172,6 +172,7 @@ frozenether.Account.prototype.updateHtml = function() {
 			$(self.selector('button_deposit')).prop('disabled', true);
 			$(self.selector('button_withdraw')).prop('disabled', false);
 		}
+		frozenether.updateTotalAmount();
 	});
 }
 
@@ -417,6 +418,17 @@ frozenether.lengthen = function() {
 	}
 
 	account.lengthen(duration);
+}
+
+frozenether.updateTotalAmount = function() {
+	var total = web3.toBigNumber(0);
+
+	frozenether.accounts.forEach(function(account) {
+		if (typeof account.amount !== 'undefined') {
+			total = total.plus(account.amount);
+		}
+	});
+	$('#total_amount').text(frozenether.amountToString(total));
 }
 
 frozenether.onNewEthAccount = function(account) {
