@@ -36,7 +36,7 @@ frozenether.durationToString = function(duration) {
 		return string;
 	}
 
-	if (duration.gt(31536000)) {
+	if (duration.gte(31536000)) {
 		var years = duration.divToInt(31536000);
 		var months = duration.modulo(31536000).divToInt(2629800);
 
@@ -44,7 +44,7 @@ frozenether.durationToString = function(duration) {
 		if (months.gt(0)) {
 			string += ' ' + months.toString() + ' Months';
 		}
-	} else if (duration.gt(2629800)) {
+	} else if (duration.gte(2629800)) {
 		var months = duration.divToInt(2629800);
 		var weeks = duration.modulo(2629800).divToInt(604800);
 
@@ -52,7 +52,7 @@ frozenether.durationToString = function(duration) {
 		if (weeks.gt(0)) {
 			string += ' ' + weeks.toString() + ' Weeks';
 		}
-	} else if (duration.gt(604800)) {
+	} else if (duration.gte(604800)) {
 		var weeks = duration.divToInt(604800);
 		var days = duration.modulo(604800).divToInt(86400);
 
@@ -60,7 +60,7 @@ frozenether.durationToString = function(duration) {
 		if (days.gt(0)) {
 			string += ' ' + days.toString() + ' Days';
 		}
-	} else if (duration.gt(86400)) {
+	} else if (duration.gte(86400)) {
 		var days = duration.divToInt(86400);
 		var hours = duration.modulo(86400).divToInt(3600);
 
@@ -68,7 +68,7 @@ frozenether.durationToString = function(duration) {
 		if (hours.gt(0)) {
 			string += ' ' + hours.toString() + ' Hours';
 		}
-	} else if (duration.gt(3600)) {
+	} else if (duration.gte(3600)) {
 		var hours = duration.divToInt(3600);
 		var minutes = duration.modulo(3600).divToInt(60);
 
@@ -76,7 +76,7 @@ frozenether.durationToString = function(duration) {
 		if (minutes.gt(0)) {
 			string += ' ' + minutes.toString() + ' Minutes';
 		}
-	} else if (duration.gt(60)) {
+	} else if (duration.gte(60)) {
 		var minutes = duration.divToInt(60);
 		var seconds = duration.modulo(60);
 
@@ -377,7 +377,7 @@ frozenether.Account.prototype.lengthen = function(duration) {
 			this.reject();
 			return;
 		}
-		return frozen.lengthen(self.id, duration, { from: self.owner });
+		return frozen.lenghtenFrozenState(self.id, duration, { from: self.owner });
 	}).then(function() {
 		return self.updateHtml();
 	}).then(function() {
