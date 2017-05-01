@@ -33,9 +33,63 @@ frozenether.durationToString = function(duration) {
 	var string = '';
 
 	if (duration === undefined) {
-		return '';
+		return string;
 	}
-	return '';
+
+	if (duration.gt(31536000)) {
+		var years = duration.divToInt(31536000);
+		var months = duration.modulo(31536000).divToInt(2629800);
+
+		string += years.toString() + ' Years';
+		if (months.gt(0)) {
+			string += ' ' + months.toString() + ' Months';
+		}
+	} else if (duration.gt(2629800)) {
+		var months = duration.divToInt(2629800);
+		var weeks = duration.modulo(2629800).divToInt(604800);
+
+		string += months.toString() + ' Months';
+		if (weeks.gt(0)) {
+			string += ' ' + weeks.toString() + ' Weeks';
+		}
+	} else if (duration.gt(604800)) {
+		var weeks = duration.divToInt(604800);
+		var days = duration.modulo(604800).divToInt(86400);
+
+		string += weeks.toString() + ' Weeks';
+		if (days.gt(0)) {
+			string += ' ' + days.toString() + ' Days';
+		}
+	} else if (duration.gt(86400)) {
+		var days = duration.divToInt(86400);
+		var hours = duration.modulo(86400).divToInt(3600);
+
+		string += days.toString() + ' Days';
+		if (hours.gt(0)) {
+			string += ' ' + hours.toString() + ' Hours';
+		}
+	} else if (duration.gt(3600)) {
+		var hours = duration.divToInt(3600);
+		var minutes = duration.modulo(3600).divToInt(60);
+
+		string += hours.toString() + ' Hours';
+		if (minutes.gt(0)) {
+			string += ' ' + minutes.toString() + ' Minutes';
+		}
+	} else if (duration.gt(60)) {
+		var minutes = duration.divToInt(60);
+		var seconds = duration.modulo(60);
+
+		string += minutes.toString() + ' Minutes';
+		if (seconds.gt(0)) {
+			string += ' ' + seconds.toString() + ' Seconds';
+		}
+	} else if (duration.gt(0)) {
+		string += duration.toString() + ' Seconds';
+	} else {
+		string += 'Expired';
+	}
+	return string;
 }
 
 frozenether.durationToInt = function(value, unit) {
@@ -64,7 +118,7 @@ frozenether.durationToInt = function(value, unit) {
 		duration = duration.times('2629800');
 		break;
 	case 'Years':
-		duration = duration.times('31557600');
+		duration = duration.times('31536000');
 		break;
 	default:
 		console.error('Unknown duration unit(' + unit + '): use \'Days\'');
