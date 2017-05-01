@@ -139,6 +139,7 @@ frozenether.Account = function(owner, amount, duration) {
 
 	frozenether.contract.deployed().then(function(instance) {
 		frozen = instance;
+		console.error(instance);
 		return Math.floor(Math.random() * 65536);
 	}).then(function(id) {
 		self.id = web3.toBigNumber(id);
@@ -546,6 +547,23 @@ frozenether.initContract = function() {
 	});
 }
 
+frozenether.initEvents = function(owner) {
+	var frozen;
+
+	return frozenether.contract.deployed().then(function(instance) {
+		frozen = instance;
+		web3.eth.getAccounts(function(e, accounts) {
+			frozen.allEvents({ owner: accounts }).watch(function(e, msg) {
+				if (e) {
+					console.error('Error with create event');
+					return;
+				}
+				console.error(msg.event);
+			});
+		});
+	});
+}
+
 frozenether.initStorage = function() {
 	var first_name = localStorage.getItem('first_name');
 	if (first_name === null) {
@@ -635,13 +653,13 @@ $(function() {
 	frozenether.initContract().then(function() {
 		frozenether.initStorage();
 	}).then(function() {
-		frozenether.initNav();
-	}).then(function() {
 		frozenether.initDropdown();
 	}).then(function() {
 		frozenether.initCheckbox();
 	}).then(function() {
 		frozenether.initButton();
+	}).then(function() {
+		frozenether.initNav();
 	}).catch(function(message) {
 		frozenether.initFailed(message);
 	});
