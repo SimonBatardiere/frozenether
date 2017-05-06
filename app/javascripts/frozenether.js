@@ -6,7 +6,8 @@ import frozenether_artifacts from '../../build/contracts/FrozenEther.json'
 var frozenether = {
 	contract: {},
 	active: {},
-	accounts: []
+	accounts: [],
+	history: {}
 };
 
 frozenether.amountToString = function(amount) {
@@ -128,37 +129,92 @@ frozenether.durationToInt = function(value, unit) {
 	return duration;
 }
 
-frozenether.Account = function(owner, amount, duration) {
-	var self = this;
-	var frozen;
+frozenether.Event = function(msg, identifier) {
+	var html = '';
 
+	this.identifier = identifier + '_' + msg.transactionHash + '_' + msg.event;
+	html += '<tr id="' + this.identifier + '">';
+	html += '<td>9 Mar 2017, 10:31</td>';
+	html += '<td>' + msg.args.owner + '</td>';
+	html += '<td>' + msg.args.id + '</td>';
+	html += '<td>' + msg.event + '</td>';
+	html += '<td>';
+	html += frozenether.amountToString(msg.args.amount);
+	html += frozenether.durationToString(msg.args.duration);
+	html += '</td>';
+	html += '</tr>';
+	console.error(msg);
+	$('#' + identifier).append(html);
+}
+
+frozenether.Event.prototype.destroy = function() {
+	$('#' + this.identifier).remove();
+}
+
+frozenether.History = function(identifier) {
+	this.identifier = identifier;
+	this.max = parseInt(localStorage.getItem('history_size'), 10);
+	this.events = [];
+}
+
+frozenether.History.prototype.setMax = function(max) {
+	this.max = parseInt(max, 10);
+	while (this.events.length >= this.max) {
+		this.shift();
+	}
+}
+
+frozenether.History.prototype.push = function(evt) {
+	if (typeof evt === 'undefined') {
+		return;
+	}
+	if (this.events.length >= this.max) {
+		this.shift();
+	}
+	this.events.push(evt);
+}
+
+frozenether.History.prototype.pop = function() {
+	var evt = this.events.pop();
+	if (typeof evt === 'undefined') {
+		return undefined;
+	}
+	evt.destroy();
+	return evt;
+}
+
+frozenether.History.prototype.shift = function() {
+	var evt = this.events.shift();
+	if (typeof evt === 'undefined') {
+		return undefined;
+	}
+	evt.destroy();
+	return evt;
+}
+
+frozenether.History.prototype.empty = function() {
+	while (typeof this.pop() !== 'undefined') {
+	}
+}
+
+frozenether.History.prototype.onEvent = function(msg) {
+	var evt = new frozenether.Event(msg, this.identifier);
+	this.push(evt);
+}
+
+frozenether.Account = function(owner, id) {
 	this.owner = owner;
-	this.id = undefined;
+	this.id = id;
 	this.amount = undefined;
 	this.duration = undefined;
+	this.history = {};
+	frozenether.accounts.push(this);
 
-	frozenether.contract.deployed().then(function(instance) {
-		frozen = instance;
-		console.error(instance);
-		return Math.floor(Math.random() * 65536);
-	}).then(function(id) {
-		self.id = web3.toBigNumber(id);
-		return frozen.isExist.call(self.id, { from: self.owner });
-	}).then(function(exist) {
-		if (exist) {
-			console.error('The account already exists');
-			this.reject();
-			return;
-		}
-		return frozen.create(self.id, duration, { from: self.owner, value: amount });
-	}).then(function() {
-		self.html();
+	if (this.id !== undefined) {
+		this.history = new frozenether.History(this.identifier('history'));
+		this.html();
 		localStorage.setItem('first_name', 'accounts');
-		$('#popup_create').modal('toggle');
-		$('#create_button').prop('disabled', false);
-	}).catch(function() {
-		console.error('Create new Frozen Ether account failed');
-	});
+	}
 }
 
 frozenether.Account.prototype.isEqual = function(owner, id) {
@@ -286,9 +342,8 @@ frozenether.Account.prototype.htmlSection = function() {
 	html += '<h1>History</h1>';
 	html += '<div class="table-responsive">';
 	html += '<table class="table table-striped">';
-	html += '<thead><tr><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Amount</th></tr></thead>';
-	html += '<tbody>';
-	html += '<tr><td>9 Mar 2017, 10:31</td><td>0x6483d4DBBEAe052F69C90b0Bd26cCFF2A44Ada13</td><td>31</td><td>Create</td><td>10</td></tr>';
+	html += '<thead><tr><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Value</th></tr></thead>';
+	html += '<tbody id="' + this.identifier('history') + '">';
         html += '</tbody>';
 	html += '</table>';
 	html += '</div>';
@@ -315,6 +370,39 @@ frozenether.Account.prototype.naviguate = function() {
 	$('#withdraw_id').text(this.id);
 	$('#lengthen_owner').text(this.owner);
 	$('#lengthen_id').text(this.id);
+}
+
+frozenether.Account.prototype.create = function(amount, duration) {
+	var self = this;
+	var frozen;
+
+	if (typeof this.id !== 'undefined') {
+		console.error('Account is already created');
+		return;
+	}
+
+	frozenether.contract.deployed().then(function(instance) {
+		frozen = instance;
+		return Math.floor(Math.random() * 65536);
+	}).then(function(id) {
+		self.id = web3.toBigNumber(id);
+		self.history = new frozenether.History(self.identifier('history'));
+		return frozen.isExist.call(self.id, { from: self.owner });
+	}).then(function(exist) {
+		if (exist) {
+			console.error('The account already exists');
+			this.reject();
+			return;
+		}
+		return frozen.create(self.id, duration, { from: self.owner, value: amount });
+	}).then(function() {
+		self.html();
+		localStorage.setItem('first_name', 'accounts');
+		$('#popup_create').modal('toggle');
+		$('#create_button').prop('disabled', false);
+	}).catch(function() {
+		console.error('Create new Frozen Ether account failed');
+	});
 }
 
 frozenether.Account.prototype.deposit = function(amount) {
@@ -389,6 +477,11 @@ frozenether.Account.prototype.lengthen = function(duration) {
 	});
 }
 
+frozenether.Account.prototype.onEvent = function(msg) {
+	this.history.onEvent(msg);
+	this.updateHtml();
+}
+
 frozenether.getAccount = function(owner, id) {
 	var found = undefined;
 
@@ -413,8 +506,8 @@ frozenether.create = function() {
 	amount = web3.toWei(amount_value, amount_unit);
 	duration = frozenether.durationToInt(duration_value, duration_unit);
 
-	account = new frozenether.Account(owner, amount, duration);
-	frozenether.accounts.push(account);
+	account = new frozenether.Account(owner);
+	account.create(amount, duration);
 }
 
 frozenether.deposit = function() {
@@ -484,6 +577,26 @@ frozenether.updateTotalAmount = function() {
 		}
 	});
 	$('#total_amount').text(frozenether.amountToString(total));
+}
+
+frozenether.onEvent = function(msg) {
+	var account;
+
+	console.log('event: ' + msg.event + ' owner: ' + msg.args.owner + ' id: ' + msg.args.id);
+	account = frozenether.getAccount(msg.args.owner, msg.args.id);
+	if (account === undefined) {
+		frozenether.contract.deployed().then(function(instance) {
+			return instance.isExist.call(msg.args.id, { from: msg.args.owner });
+		}).then(function(exist) {
+			if (exist) {
+				account = new frozenether.Account(msg.args.owner, msg.args.id);
+				account.onEvent(msg);
+			}
+		});
+	} else {
+		account.onEvent(msg);
+	}
+	frozenether.history.onEvent(msg);
 }
 
 frozenether.onNewEthAccount = function(account) {
@@ -558,7 +671,7 @@ frozenether.initEvents = function(owner) {
 					console.error('Error with create event');
 					return;
 				}
-				console.error(msg.event);
+				frozenether.onEvent(msg);
 			});
 		});
 	});
@@ -572,7 +685,7 @@ frozenether.initStorage = function() {
 
 	var history_size = localStorage.getItem('history_size');
 	if (history_size === null) {
-		localStorage.setItem('history_size', 8);
+		localStorage.setItem('history_size', 32);
 	}
 
 	var terms_accepted = localStorage.getItem('terms_accepted');
@@ -645,19 +758,39 @@ frozenether.initButton = function() {
 	});
 }
 
+frozenether.initSettings = function() {
+	var size;
+
+	$('#history_size').on('change', function() {
+		size = parseInt($('#history_size').val(), 10);
+		localStorage.setItem('history_size', size);
+		frozenether.history.setMax(size);
+		frozenether.accounts.forEach(function(account) {
+			account.history.setMax(size);
+		});
+	});
+}
+
 frozenether.initFailed = function(message) {
 	alert(message);
 }
 
 $(function() {
+
 	frozenether.initContract().then(function() {
 		frozenether.initStorage();
+	}).then(function() {
+		frozenether.initEvents();
+	}).then(function() {
+		frozenether.history = new frozenether.History('history');
 	}).then(function() {
 		frozenether.initDropdown();
 	}).then(function() {
 		frozenether.initCheckbox();
 	}).then(function() {
 		frozenether.initButton();
+	}).then(function() {
+		frozenether.initSettings();
 	}).then(function() {
 		frozenether.initNav();
 	}).catch(function(message) {
