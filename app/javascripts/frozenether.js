@@ -10,13 +10,18 @@ var frozenether = {
 	history: {}
 };
 
+frozenether.fail = function(string) {
+	$('#error_message').text(string);
+	$('#popup_error').show();
+}
+
 frozenether.amountToString = function(amount) {
 	var string = '';
 	var units = ['Wei', 'Kwei', 'Mwei', 'Gwei', 'Szabo', 'Finney', 'Ether', 'Kether', 'Mether', 'Gether', 'Tether'];
 	var i = 0;
 	var len = units.length;
 
-	if (amount === undefined) {
+	if (typeof amount === 'undefined') {
 		return '';
 	}
 
@@ -33,7 +38,7 @@ frozenether.amountToString = function(amount) {
 frozenether.durationToString = function(duration) {
 	var string = '';
 
-	if (duration === undefined) {
+	if (typeof duration === 'undefined') {
 		return string;
 	}
 
@@ -131,20 +136,41 @@ frozenether.durationToInt = function(value, unit) {
 
 frozenether.Event = function(msg, identifier) {
 	var html = '';
+	var date;
 
 	this.identifier = identifier + '_' + msg.transactionHash + '_' + msg.event;
 	html += '<tr id="' + this.identifier + '">';
-	html += '<td>9 Mar 2017, 10:31</td>';
-	html += '<td>' + msg.args.owner + '</td>';
-	html += '<td>' + msg.args.id + '</td>';
-	html += '<td>' + msg.event + '</td>';
-	html += '<td>';
-	html += frozenether.amountToString(msg.args.amount);
-	html += frozenether.durationToString(msg.args.duration);
-	html += '</td>';
-	html += '</tr>';
-	console.error(msg);
-	$('#' + identifier).append(html);
+	if (msg.event == 'Create') {
+		html += '<td><span class="glyphicon glyphicon-plus" aria-hidden="true"></td>';
+	} else if (msg.event == 'Deposit') {
+		html += '<td><span class="glyphicon glyphicon-log-in" aria-hidden="true"></td>';
+	} else if (msg.event == 'Withdraw') {
+		html += '<td><span class="glyphicon glyphicon-log-out" aria-hidden="true"></td>';
+	} else if (msg.event == 'Freeze') {
+		html += '<td><span class="glyphicon glyphicon-time" aria-hidden="true"></td>';
+	} else if (msg.event == 'Destroy') {
+		html += '<td><span class="glyphicon glyphicon-remove" aria-hidden="true"></td>';
+	} else {
+		html += '<td></td>';
+	}
+
+	web3.eth.getBlock(msg.blockNumber, false, function(e, block) {
+		if (e) {
+			html += '<td></td>';
+		} else {
+			date = new Date(block.timestamp * 1000);
+			html += '<td>' + date.toString().split(' GMT').shift() + '</td>';
+		}
+		html += '<td>' + msg.args.owner + '</td>';
+		html += '<td>' + msg.args.id + '</td>';
+		html += '<td>' + msg.event + '</td>';
+		html += '<td>';
+		html += frozenether.amountToString(msg.args.amount);
+		html += frozenether.durationToString(msg.args.duration);
+		html += '</td>';
+		html += '</tr>';
+		$('#' + identifier).prepend(html);
+	});
 }
 
 frozenether.Event.prototype.destroy = function() {
@@ -210,7 +236,7 @@ frozenether.Account = function(owner, id) {
 	this.history = {};
 	frozenether.accounts.push(this);
 
-	if (this.id !== undefined) {
+	if (typeof this.id !== 'undefined') {
 		this.history = new frozenether.History(this.identifier('history'));
 		this.html();
 		localStorage.setItem('first_name', 'accounts');
@@ -276,7 +302,7 @@ frozenether.Account.prototype.updateHtml = function() {
 		$(self.selector('summary_duration')).text(frozenether.durationToString(self.duration));
 		$(self.selector('section_amount')).text(frozenether.amountToString(self.amount));
 		$(self.selector('section_duration')).text(frozenether.durationToString(self.duration));
-		if (self.duration !== undefined && self.duration.gt(0)) {
+		if (typeof self.duration !== 'undefined' && self.duration.gt(0)) {
 			$(self.selector('button_deposit')).prop('disabled', false);
 			$(self.selector('button_withdraw')).prop('disabled', true);
 		} else {
@@ -342,7 +368,7 @@ frozenether.Account.prototype.htmlSection = function() {
 	html += '<h1>History</h1>';
 	html += '<div class="table-responsive">';
 	html += '<table class="table table-striped">';
-	html += '<thead><tr><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Value</th></tr></thead>';
+	html += '<thead><tr><th></th><th>Date</th><th>Account</th><th>Identifier</th><th>Action</th><th>Value</th></tr></thead>';
 	html += '<tbody id="' + this.identifier('history') + '">';
         html += '</tbody>';
 	html += '</table>';
@@ -401,7 +427,9 @@ frozenether.Account.prototype.create = function(amount, duration) {
 		$('#popup_create').modal('toggle');
 		$('#create_button').prop('disabled', false);
 	}).catch(function() {
-		console.error('Create new Frozen Ether account failed');
+		$('#popup_create').modal('toggle');
+		$('#create_button').prop('disabled', false);
+		frozenether.fail('Create new Frozen Ether account failed');
 	});
 }
 
@@ -425,7 +453,9 @@ frozenether.Account.prototype.deposit = function(amount) {
 		$('#popup_deposit').modal('toggle');
 		$('#deposit_button').prop('disabled', false);
 	}).catch(function() {
-		console.error('Deposit on Frozen Ether account failed');
+		$('#popup_deposit').modal('toggle');
+		$('#deposit_button').prop('disabled', false);
+		frozenether.fail('deposit on Frozen Ether account failed');
 	});
 }
 
@@ -449,7 +479,9 @@ frozenether.Account.prototype.withdraw = function(amount) {
 		$('#popup_withdraw').modal('toggle');
 		$('#withdraw_button').prop('disabled', false);
 	}).catch(function() {
-		console.error('Withdraw from Frozen Ether account failed');
+		$('#popup_withdraw').modal('toggle');
+		$('#withdraw_button').prop('disabled', false);
+		frozenether.fail('withdraw from Frozen Ether account failed');
 	});
 }
 
@@ -473,7 +505,9 @@ frozenether.Account.prototype.lengthen = function(duration) {
 		$('#popup_lengthen').modal('toggle');
 		$('#lengthen_button').prop('disabled', false);
 	}).catch(function() {
-		console.error('Lengthen the Frozen Ether account failed');
+		$('#popup_lengthen').modal('toggle');
+		$('#lengthen_button').prop('disabled', false);
+		frozenether.fail('lengthen the Frozen Ether account failed');
 	});
 }
 
@@ -520,7 +554,7 @@ frozenether.deposit = function() {
 
 	amount = web3.toWei(amount_value, amount_unit);
 	account = frozenether.getAccount(owner, id);
-	if (account === undefined) {
+	if (typeof account === 'undefined') {
 		console.error('Get account failed: owner(' + owner + ') id(' + id + ')');
 		return;
 	}
@@ -542,7 +576,7 @@ frozenether.withdraw = function() {
 		amount = web3.toWei(amount_value, amount_unit);
 		account = frozenether.getAccount(owner, id);
 	}
-	if (account === undefined) {
+	if (typeof account === 'undefined') {
 		console.error('Get account failed: owner(' + owner + ') id(' + id + ')');
 		return;
 	}
@@ -560,7 +594,7 @@ frozenether.lengthen = function() {
 
 	duration = frozenether.durationToInt(duration_value, duration_unit);
 	account = frozenether.getAccount(owner, id);
-	if (account === undefined) {
+	if (typeof account === 'undefined') {
 		console.error('Get account failed: owner(' + owner + ') id(' + id + ')');
 		return;
 	}
@@ -582,14 +616,17 @@ frozenether.updateTotalAmount = function() {
 frozenether.onEvent = function(msg) {
 	var account;
 
-	console.log('event: ' + msg.event + ' owner: ' + msg.args.owner + ' id: ' + msg.args.id);
 	account = frozenether.getAccount(msg.args.owner, msg.args.id);
-	if (account === undefined) {
+	if (typeof account === 'undefined') {
 		frozenether.contract.deployed().then(function(instance) {
 			return instance.isExist.call(msg.args.id, { from: msg.args.owner });
 		}).then(function(exist) {
 			if (exist) {
-				account = new frozenether.Account(msg.args.owner, msg.args.id);
+				/* I recheck, because the account may created asynchronously */
+				account = frozenether.getAccount(msg.args.owner, msg.args.id);
+				if (typeof account === 'undefined') {
+					account = new frozenether.Account(msg.args.owner, msg.args.id);
+				}
 				account.onEvent(msg);
 			}
 		});
@@ -666,9 +703,9 @@ frozenether.initEvents = function(owner) {
 	return frozenether.contract.deployed().then(function(instance) {
 		frozen = instance;
 		web3.eth.getAccounts(function(e, accounts) {
-			frozen.allEvents({ owner: accounts }).watch(function(e, msg) {
+			frozen.allEvents({ fromBlock: 0, owner: accounts }).watch(function(e, msg) {
 				if (e) {
-					console.error('Error with create event');
+					console.error('Error watching events');
 					return;
 				}
 				frozenether.onEvent(msg);
@@ -690,11 +727,18 @@ frozenether.initStorage = function() {
 
 	var terms_accepted = localStorage.getItem('terms_accepted');
 	if (terms_accepted === null) {
-		localStorage.setItem('terms_accepted', false);
+		terms_accepted = 'false';
+		localStorage.setItem('terms_accepted', terms_accepted);
+	}
+	if (terms_accepted == 'true') {
+		$('#create_terms_button').hide();
+	} else {
+		$('#create_button').prop('disabled', false);
 	}
 }
 
 frozenether.initNav = function() {
+	$('#popup_error').hide();
 	$('#section_presentation').hide();
 	$('#section_accounts').hide();
 	$('#section_settings').hide();
@@ -756,6 +800,12 @@ frozenether.initButton = function() {
 		$('#lengthen_button').prop('disabled', true);
 		frozenether.lengthen();
 	});
+	$('#terms_button').on('click', function() {
+		localStorage.setItem('terms_accepted', 'true');
+		$('#create_button').prop('disabled', false);
+		$('#create_terms_button').hide();
+		$('#popup_terms').modal('toggle');
+	});
 }
 
 frozenether.initSettings = function() {
@@ -769,10 +819,6 @@ frozenether.initSettings = function() {
 			account.history.setMax(size);
 		});
 	});
-}
-
-frozenether.initFailed = function(message) {
-	alert(message);
 }
 
 $(function() {
@@ -794,7 +840,7 @@ $(function() {
 	}).then(function() {
 		frozenether.initNav();
 	}).catch(function(message) {
-		frozenether.initFailed(message);
+		frozenether.fail('Initialization failed ' + message);
 	});
 });
 

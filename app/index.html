@@ -38,6 +38,12 @@
       </div>
     </nav>
 
+    <div id="popup_error" class="alert alert-danger alert-dismissable fade in">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      <strong>Warning: </strong>
+      <span id="error_message"></span>
+    </div>
+
     <div id="section_presentation" class="container-fluid">
       <div class="row">
         <main class="col-sm-12 offset-sm-0 col-md-12 offset-md-0 pt-3">
@@ -68,6 +74,7 @@
             <table class="table table-striped">
               <thead>
                 <tr>
+                  <th></th>
                   <th>Date</th>
                   <th>Account</th>
                   <th>Identifier</th>
@@ -186,6 +193,7 @@
           </div>
           <div class="modal-footer">
             <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button id="create_terms_button" type="button" data-toggle="modal" href="#popup_terms" class="btn btn-danger">Terms and conditions</button>
             <button id="create_button" type="none" class="btn btn-danger">Create</button>
           </div>
         </div>
@@ -361,7 +369,7 @@
           </div>
           <div class="modal-footer">
             <button type="none" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="none" class="btn btn-danger">I understand and accept</button>
+            <button id="terms_button" type="none" class="btn btn-danger">I understand and accept</button>
           </div>
         </div>
       </div>
