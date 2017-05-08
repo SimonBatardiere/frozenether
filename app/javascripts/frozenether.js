@@ -140,43 +140,54 @@ frozenether.durationToInt = function(value, unit) {
 	return duration;
 }
 
-frozenether.Event = function(msg, identifier) {
-	var html = '';
+frozenether.Event = function(msg, identifier, resolve) {
+	var self = this;
 	var date;
 
+	this.msg = msg;
 	this.identifier = identifier + '_' + msg.transactionHash + '_' + msg.event;
-	html += '<tr id="' + this.identifier + '">';
+	this.html = '';
+
+	this.html += '<tr id="' + this.identifier + '">';
 	if (msg.event == 'Create') {
-		html += '<td><span class="glyphicon glyphicon-plus" aria-hidden="true"></td>';
+		this.html += '<td><span class="glyphicon glyphicon-plus" aria-hidden="true"></td>';
 	} else if (msg.event == 'Deposit') {
-		html += '<td><span class="glyphicon glyphicon-log-in" aria-hidden="true"></td>';
+		this.html += '<td><span class="glyphicon glyphicon-log-in" aria-hidden="true"></td>';
 	} else if (msg.event == 'Withdraw') {
-		html += '<td><span class="glyphicon glyphicon-log-out" aria-hidden="true"></td>';
+		this.html += '<td><span class="glyphicon glyphicon-log-out" aria-hidden="true"></td>';
 	} else if (msg.event == 'Freeze') {
-		html += '<td><span class="glyphicon glyphicon-time" aria-hidden="true"></td>';
+		this.html += '<td><span class="glyphicon glyphicon-time" aria-hidden="true"></td>';
 	} else if (msg.event == 'Destroy') {
-		html += '<td><span class="glyphicon glyphicon-remove" aria-hidden="true"></td>';
+		this.html += '<td><span class="glyphicon glyphicon-remove" aria-hidden="true"></td>';
 	} else {
-		html += '<td></td>';
+		this.html += '<td></td>';
 	}
 
 	web3.eth.getBlock(msg.blockNumber, false, function(e, block) {
 		if (e) {
-			html += '<td></td>';
+			self.html += '<td></td>';
 		} else {
 			date = new Date(block.timestamp * 1000);
-			html += '<td>' + date.toString().split(' GMT').shift() + '</td>';
+			self.html += '<td>' + date.toString().split(' GMT').shift() + '</td>';
 		}
-		html += '<td>' + msg.args.owner + '</td>';
-		html += '<td>' + msg.args.id + '</td>';
-		html += '<td>' + msg.event + '</td>';
-		html += '<td>';
-		html += frozenether.amountToString(msg.args.amount);
-		html += frozenether.durationToString(msg.args.duration);
-		html += '</td>';
-		html += '</tr>';
-		$('#' + identifier).prepend(html);
+		self.html += '<td>' + msg.args.owner + '</td>';
+		self.html += '<td>' + msg.args.id + '</td>';
+		self.html += '<td>' + msg.event + '</td>';
+		self.html += '<td>';
+		self.html += frozenether.amountToString(msg.args.amount);
+		self.html += frozenether.durationToString(msg.args.duration);
+		self.html += '</td>';
+		self.html += '</tr>';
+		resolve();
 	});
+}
+
+frozenether.Event.prototype.display = function(identifier, next) {
+	if (typeof next === 'undefined') {
+		$('#' + identifier).prepend(this.html);
+	} else {
+		$('#' + next.identifier).before(this.html);
+	}
 }
 
 frozenether.Event.prototype.destroy = function() {
@@ -230,8 +241,23 @@ frozenether.History.prototype.empty = function() {
 }
 
 frozenether.History.prototype.onEvent = function(msg) {
-	var evt = new frozenether.Event(msg, this.identifier);
-	this.push(evt);
+	var self = this;
+
+	var evt = new frozenether.Event(msg, this.identifier, function() {
+		self.push(evt);
+		self.events.sort(function(evt1, evt2) {
+			var result = evt2.msg.blockNumber - evt1.msg.blockNumber;
+			if (result == 0) {
+				if (evt2.msg.event == 'Destroy') {
+					result = 1;
+				} else {
+					result = -1;
+				}
+			}
+			return result;
+		});
+		evt.display(self.identifier, self.events[self.events.indexOf(evt) + 1]);
+	});
 }
 
 frozenether.Account = function(owner, id) {
