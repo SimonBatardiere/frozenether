@@ -10,13 +10,21 @@ var frozenether = {
 	history: {}
 };
 
-frozenether.fail = function(string) {
+frozenether.fail = function(string1, string2) {
 	var html = '';
 
 	html += '<div class="alert alert-danger alert-dismissable fade in">';
 	html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
 	html += '<strong>Warning: </strong>';
-	html += string;
+	if (typeof string1 !== 'undefined') {
+		html += string1;
+		if (typeof string2 !== 'undefined') {
+			html += ' - ';
+			html += string2;
+		}
+	} else {
+		html =+ 'Internal error';
+	}
 	html += '</div>';
 	$('#popup_error').append(html);
 }
@@ -184,7 +192,7 @@ frozenether.Event = function(msg, identifier, resolve) {
 
 frozenether.Event.prototype.display = function(identifier, next) {
 	if (typeof next === 'undefined') {
-		$('#' + identifier).prepend(this.html);
+		$('#' + identifier).append(this.html);
 	} else {
 		$('#' + next.identifier).before(this.html);
 	}
@@ -275,6 +283,14 @@ frozenether.Account = function(owner, id) {
 	}
 }
 
+frozenether.Account.prototype.destroy = function() {
+	frozenether.accounts.splice(frozenether.accounts.indexOf(this), 1);
+	$(this.selector('summary')).remove();
+	$(this.selector()).remove();
+	frozenether.naviguate();
+	frozenether.updateTotalAmount();
+}
+
 frozenether.Account.prototype.isEqual = function(owner, id) {
 	if (this.owner != owner) {
 		return false;
@@ -310,9 +326,7 @@ frozenether.Account.prototype.update = function() {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (!exist) {
-			console.error('The account doesn\'t exist');
-			this.reject();
-			return;
+			throw new Error('The account doesn\'t exist');
 		}
 		return frozen.amount.call(self.id, { from: self.owner });
 	}).then(function(amount) {
@@ -448,9 +462,7 @@ frozenether.Account.prototype.create = function(amount, duration) {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (exist) {
-			console.error('The account already exists');
-			this.reject();
-			return;
+			throw new Error('the account already exists');
 		}
 		return frozen.create(self.id, duration, { from: self.owner, value: amount });
 	}).then(function() {
@@ -458,10 +470,10 @@ frozenether.Account.prototype.create = function(amount, duration) {
 		localStorage.setItem('first_name', 'accounts');
 		$('#popup_create').modal('toggle');
 		$('#create_button').prop('disabled', false);
-	}).catch(function() {
+	}).catch(function(e) {
 		$('#popup_create').modal('toggle');
 		$('#create_button').prop('disabled', false);
-		frozenether.fail('Create new Frozen Ether account failed');
+		frozenether.fail('Create new Frozen Ether account failed', e.message);
 	});
 }
 
@@ -474,9 +486,7 @@ frozenether.Account.prototype.deposit = function(amount) {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (!exist) {
-			console.error('The account doesn\'t exist');
-			this.reject();
-			return;
+			throw new Error('The account doesn\'t exist');
 		}
 		return frozen.deposit(self.id, { from: self.owner, value: amount });
 	}).then(function() {
@@ -484,10 +494,10 @@ frozenether.Account.prototype.deposit = function(amount) {
 	}).then(function() {
 		$('#popup_deposit').modal('toggle');
 		$('#deposit_button').prop('disabled', false);
-	}).catch(function() {
+	}).catch(function(e) {
 		$('#popup_deposit').modal('toggle');
 		$('#deposit_button').prop('disabled', false);
-		frozenether.fail('deposit on Frozen Ether account failed');
+		frozenether.fail('Deposit on Frozen Ether account failed', e.message);
 	});
 }
 
@@ -500,20 +510,31 @@ frozenether.Account.prototype.withdraw = function(amount) {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (!exist) {
-			console.error('The account doesn\'t exist');
-			this.reject();
-			return;
+			throw new Error('The account doesn\'t exist');
+		}
+		return frozen.amount.call(self.id, { from: self.owner });
+	}).then(function(value) {
+		if (typeof amount === 'undefined') {
+			amount = value;
+		} else if (value.lt(amount)) {
+			throw new Error('Account has only ' + frozenether.amountToString(value));
 		}
 		return frozen.withdraw(self.id, amount, { from: self.owner });
 	}).then(function() {
-		return self.updateHtml();
+		return frozen.isExist.call(self.id, { from: self.owner });
+	}).then(function(exist) {
+		if (exist) {
+			self.updateHtml();
+		} else {
+			self.destroy();
+		}
 	}).then(function() {
 		$('#popup_withdraw').modal('toggle');
 		$('#withdraw_button').prop('disabled', false);
-	}).catch(function() {
+	}).catch(function(e) {
 		$('#popup_withdraw').modal('toggle');
 		$('#withdraw_button').prop('disabled', false);
-		frozenether.fail('withdraw from Frozen Ether account failed');
+		frozenether.fail('Withdraw from Frozen Ether account failed', e.message);
 	});
 }
 
@@ -526,9 +547,7 @@ frozenether.Account.prototype.lengthen = function(duration) {
 		return frozen.isExist.call(self.id, { from: self.owner });
 	}).then(function(exist) {
 		if (!exist) {
-			console.error('The account doesn\'t exist');
-			this.reject();
-			return;
+			throw new Error('The account doesn\'t exist');
 		}
 		return frozen.lenghtenFrozenState(self.id, duration, { from: self.owner });
 	}).then(function() {
@@ -536,10 +555,10 @@ frozenether.Account.prototype.lengthen = function(duration) {
 	}).then(function() {
 		$('#popup_lengthen').modal('toggle');
 		$('#lengthen_button').prop('disabled', false);
-	}).catch(function() {
+	}).catch(function(e) {
 		$('#popup_lengthen').modal('toggle');
 		$('#lengthen_button').prop('disabled', false);
-		frozenether.fail('lengthen the Frozen Ether account failed');
+		frozenether.fail('Lengthen the Frozen Ether account failed', e.message);
 	});
 }
 
@@ -603,11 +622,11 @@ frozenether.withdraw = function() {
 	var account;
 
 	if ($('#withdraw_all').is(':checked')) {
-		amount = web3.toWei(1000000000, 'Ether');
+		amount = undefined;
 	} else {
 		amount = web3.toWei(amount_value, amount_unit);
-		account = frozenether.getAccount(owner, id);
 	}
+	account = frozenether.getAccount(owner, id);
 	if (typeof account === 'undefined') {
 		console.error('Get account failed: owner(' + owner + ') id(' + id + ')');
 		return;
@@ -713,15 +732,15 @@ frozenether.initContract = function() {
 		if (typeof web3 !== 'undefined') {
 			window.web3 = new Web3(web3.currentProvider);
 		} else {
-			window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+			window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
 		}
 		frozenether.contract.setProvider(web3.currentProvider);
 
 		web3.eth.getAccounts(function(e, accounts) {
 			if (e != null) {
-				reject("There was an error fetching your accounts.");
+				throw new Error('There was an error fetching your accounts');
 			} else if (accounts.length == 0) {
-				reject("Couldn't get any accounts! Make sure your Ethereum client is configured correctly.");
+				throw new Error('Couldn\'t get any accounts! Make sure your Ethereum client is configured correctly');
 			}
 			accounts.forEach(frozenether.onNewEthAccount);
 			resolve();
@@ -870,8 +889,8 @@ $(function() {
 		frozenether.initSettings();
 	}).then(function() {
 		frozenether.initNav();
-	}).catch(function(message) {
-		frozenether.fail('Initialization failed ' + message);
+	}).catch(function(e) {
+		frozenether.fail('Initialization failed', e.message);
 	});
 });
 
