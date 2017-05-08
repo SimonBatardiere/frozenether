@@ -11,8 +11,14 @@ var frozenether = {
 };
 
 frozenether.fail = function(string) {
-	$('#error_message').text(string);
-	$('#popup_error').show();
+	var html = '';
+
+	html += '<div class="alert alert-danger alert-dismissable fade in">';
+	html += '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>';
+	html += '<strong>Warning: </strong>';
+	html += string;
+	html += '</div>';
+	$('#popup_error').append(html);
 }
 
 frozenether.amountToString = function(amount) {
@@ -738,7 +744,6 @@ frozenether.initStorage = function() {
 }
 
 frozenether.initNav = function() {
-	$('#popup_error').hide();
 	$('#section_presentation').hide();
 	$('#section_accounts').hide();
 	$('#section_settings').hide();
